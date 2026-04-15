@@ -209,6 +209,7 @@ const[startGold,setStartGold]=useState(0);
 const[sessions,setSessions]=useState(getSessions());
 // Recruit state
 const[rName,setRName]=useState("");const[rRace,setRRace]=useState(null);const[rProf,setRProf]=useState(null);
+const[showHelp,setShowHelp]=useState(false);const[showOpp,setShowOpp]=useState(false);
 const pollRef=useRef(null);
 
 useEffect(()=>{if(phase==="playing"||phase==="lobby"){pollRef.current=setInterval(async()=>{if(gameId){const g=await api.load(gameId);if(g)setGame(g);}},3000);}return()=>{if(pollRef.current)clearInterval(pollRef.current);};},[phase,gameId]);
@@ -421,7 +422,12 @@ const MapView=()=>{const conns=curReg?curReg.conn:[];
         <div style={{fontSize:here?8:7,color:here?T.goldL:canGo?T.parch:T.txtD+"55",fontFamily:"'Cinzel',serif",whiteSpace:"nowrap",marginTop:1}}>{r.name}</div>
         {locked&&<div style={{fontSize:7,color:T.red}}>🔒{r.minF}</div>}
       </div>;})}
-  </div></Card>;};
+  </div>
+  <div style={{display:"flex",flexWrap:"wrap",gap:4,padding:"8px 10px",background:T.bg+"cc",borderTop:`1px solid ${T.border}33`}}>
+    {[["🏴‍☠️","Hafen"],["🏘️","Dorf"],["🌊","See"],["⛵","Handel"],["🌿","Sumpf"],["🐠","Riff"],["🏰","Stadt"],["🌫️","Nebel"],["🦈","Hai"],["👻","Geister"],["🐍","Verlies"],["🌋","Vulkan"],["🔮","Bermuda"],["🐙","Tiefsee"],["🫧","Unterwasser"],["💎","Schatz"],["👑","Thron"]].map(([e,l])=>
+      <span key={l} style={{fontSize:8,color:T.txtD,whiteSpace:"nowrap"}}>{e}{l}</span>)}
+  </div>
+  </Card>;};
 
 // ── MENU (with session list) ──
 const MenuScreen=()=>(<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,background:`radial-gradient(ellipse at 50% 80%,${T.seaL},${T.bg} 70%)`}}>
@@ -516,11 +522,27 @@ const SetupScreen=()=>(<div style={{minHeight:"100vh",padding:20}}>
 
 const PlayScreen=()=>{const other=game?.players?.find(p=>p.id!==playerId);
   return <div style={{padding:14,paddingBottom:100}}>
-    <div style={{display:"flex",gap:4,marginBottom:8,flexWrap:"wrap"}}>
+    <div style={{display:"flex",gap:4,marginBottom:8,flexWrap:"wrap",alignItems:"center"}}>
       <Badge color={T.gold}>⭐{me?.fame||0}</Badge><Badge color="#FFD700">🏆{me?.ruhm||0}</Badge><Badge color="#FFC107">💰{me?.gold||0}</Badge><Badge color="#FF8F00">🍺{me?.rum||0}</Badge>
-      <Badge color={T.seaL}>{myShip.emoji}{myShip.name}</Badge><Badge color={isMyTurn?T.green:T.red}>{isMyTurn?"DEIN ZUG":"WARTE"}</Badge></div>
-    {myCurses.length>0&&<div style={{fontSize:9,color:T.red,marginBottom:4}}>Flueche: {myCurses.map(c=>c.name).join(", ")}</div>}
-    {other&&<div style={{fontSize:10,color:T.txtD,marginBottom:4}}>{other.name}: ⭐{other.fame} 💰{other.gold}</div>}
+      <Badge color={T.seaL}>{myShip.emoji}{myShip.name}</Badge><Badge color={isMyTurn?T.green:T.red}>{isMyTurn?"DEIN ZUG":"WARTE"}</Badge>
+      <div onClick={()=>setShowHelp(true)} style={{marginLeft:"auto",width:28,height:28,borderRadius:"50%",background:T.gold+"33",border:`1px solid ${T.gold}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:14,color:T.gold,fontWeight:900}}>?</div>
+    </div>
+    {myCurses.length>0&&<div style={{fontSize:9,color:T.red,marginBottom:4}}>Flueche: {myCurses.map(c=>`${c.name} (${c.desc})`).join(", ")}</div>}
+    {other&&<div onClick={()=>setShowOpp(!showOpp)} style={{fontSize:10,color:T.txtD,marginBottom:4,cursor:"pointer"}}>
+      {showOpp?"▼":"▶"} {other.name}: ⭐{other.fame} 🏆{other.ruhm} 💰{other.gold} · {REGIONS.find(r=>r.id===other.position)?.name||"?"}</div>}
+    {showOpp&&other&&<Card style={{background:T.bg,marginBottom:8}}>
+      <div style={{fontSize:11,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:4}}>{other.name}s Crew</div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
+        {(other.heroes||[]).map(h=>(<div key={h.id} style={{padding:6,background:T.card,borderRadius:8,opacity:h.hp<=0?0.3:1}}>
+          <div style={{fontSize:10,color:T.parch,fontWeight:700}}>{h.emoji} {h.name}</div>
+          <div style={{fontSize:9,color:T.txtD}}>{PROFS[h.profession]?.label} · HP:{h.hp}/{h.maxHp}</div>
+          <div style={{fontSize:8,color:T.txtD}}>ST:{h.st} GE:{h.ge} IN:{h.in_} NK:{hNK(h,other.curses||[])}</div>
+          {(h.equipment||[]).length>0&&<div style={{fontSize:8,color:T.txtD}}>{h.equipment.map(e=>e.emoji).join("")}</div>}
+        </div>))}
+      </div>
+      {(other.curses||[]).length>0&&<div style={{fontSize:8,color:T.red,marginTop:4}}>Flueche: {other.curses.map(c=>c.name).join(", ")}</div>}
+      <div style={{fontSize:9,color:T.txtD,marginTop:4}}>Schiff: {SHIPS.find(s=>s.id===other.ship)?.name||"Jolle"}</div>
+    </Card>}
     <div style={{fontSize:13,color:T.parch,fontFamily:"'Cinzel',serif",marginBottom:6}}>📍 {curReg?.name} {REMO[curReg?.type]}{isSea?" (See)":""}</div>
     {MapView()}{HeroCards()}
     {isMyTurn&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
@@ -639,6 +661,29 @@ const FinishedScreen=()=>(<div style={{minHeight:"100vh",display:"flex",flexDire
 return(<div style={{background:T.bg,minHeight:"100vh",color:T.txt,fontFamily:"'Crimson Text',serif",maxWidth:600,margin:"0 auto"}}>
   <style>{fonts}{`*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}button:active{transform:scale(0.97);}`}</style>
   {Toast()}
+  {showHelp&&<div onClick={()=>setShowHelp(false)} style={{position:"fixed",inset:0,background:"#000c",zIndex:998,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+    <div onClick={e=>e.stopPropagation()} style={{background:T.card,border:`1px solid ${T.gold}`,borderRadius:16,padding:20,maxWidth:380,maxHeight:"85vh",overflow:"auto",width:"100%"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+        <div style={{fontSize:18,color:T.gold,fontFamily:"'Cinzel',serif"}}>🏴‍☠️ Spielhilfe</div>
+        <div onClick={()=>setShowHelp(false)} style={{width:30,height:30,borderRadius:"50%",background:T.red+"33",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:T.red,fontWeight:900}}>X</div>
+      </div>
+      {[
+        ["Ziel","Sammle 100 Ruhm-Sterne (⭐) oder finde den legendaeren Schatz auf der Schatzinsel, um Piratenkoenig zu werden!"],
+        ["Crew","Deine 4 Piraten haben je 4 Werte: ST (Staerke), GE (Geschick), IN (Intelligenz), BW (Bewegung). NK = Nahkampf (ST + Beruf + Waffen). RW = Ruestungswert."],
+        ["Zuege","Pro Zug: Erkunden (W100-Ereignis), Rasten (heilt HP, kostet Rum), Laden, Hafen oder Aufwerten. Dann ist der Gegner dran."],
+        ["Erkunden","Wuerfelt ein zufaelliges Ereignis: Kaempfe, Fertigkeitstests (W6 + Stat vs Schwierigkeit), Entscheidungen, Schaetze, Flueche oder Handel."],
+        ["Kampf","Jeder lebende Held wuerfelt W6 + NK. Auf See: Schiffskanonen addieren sich. Gegner wuerfelt 2W6 + NK. Hoehere Summe trifft — Schaden = Differenz minus RW. Trifft den schwaechsten Helden."],
+        ["Schiffe","Kanonen = Angriffsbonus auf See. Rumpf = Ruestungsbonus auf See. Kaufbar in Haefen mit Schiffsverkauf."],
+        ["Hafen","K.O.-Helden heilen oder neue Soeldner anheuern (ersetzt K.O.-Helden). Alle K.O. = automatischer Rueckzug zum naechsten Hafen, -25% Gold."],
+        ["Progression","Waren in 4 Stufen (Tier 0-3), freigeschaltet bei 0/10/25/40⭐. Stats steigern: 8 Ruhm. Neue Fertigkeiten: 10 Ruhm. Jede Fertigkeit gibt +1 auf einen Stat."],
+        ["Flueche","Manche Events verfluchen euch — Stat-Mali, Gold halbiert oder Extra-Rumkosten. Entfernbar bei Voodoo-Priesterinnen im Sumpf."],
+        ["Speichern","Spiele speichern automatisch. Menue zeigt alle gespeicherten Spiele zum Fortsetzen — auch Tage spaeter. Mehrere Spiele parallel moeglich."],
+      ].map(([t,d])=>(<div key={t} style={{marginBottom:10}}>
+        <div style={{fontSize:12,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:2}}>{t}</div>
+        <div style={{fontSize:11,color:T.parch,lineHeight:1.4}}>{d}</div>
+      </div>))}
+    </div>
+  </div>}
   {phase==="menu"&&MenuScreen()}
   {phase==="lobby"&&LobbyScreen()}
   {phase==="setup"&&SetupScreen()}
