@@ -133,9 +133,15 @@ const TN=["Aztekengold","Rubinkrone","Smaragdkelch","Neptuns Dreizack","Sirenenh
 const CARGO=["Rum","Gewürze","Seide","Elfenbein","Tabak","Zucker","Tee","Kanonenpulver","Silberbarren","Goldmünzen","Edelsteine","Waffen","Medizin"];
 const LOC=["in einer Felshöhle","am Strand","in einem Wrack","unter Wasser","auf einer Klippe","in einem Dschungel","in einer Ruine","in einem Vulkankrater","in einer Grotte"];
 function ft(t){return t.replace(/\{pn\}/g,()=>pick(PN)).replace(/\{sn\}/g,()=>pick(SN)).replace(/\{cn\}/g,()=>pick(CN)).replace(/\{adj\}/g,()=>pick(ADJ)).replace(/\{tn\}/g,()=>pick(TN)).replace(/\{cargo\}/g,()=>pick(CARGO)).replace(/\{loc\}/g,()=>pick(LOC));}
-function mkE(n,d){const b=3+d*2;return{name:n,nk:b+roll(3),hp:b+roll(4),rw:Math.floor(d/2)};}
+function mkE(n,d){
+  // Enemy NK must challenge 4 heroes (combined NK ~16-30)
+  // UQ-style: single W6 per side, so NK is the decisive factor
+  const nk=10+d*5+roll(6); // 11-16, 16-21, 21-26...
+  const hp=5+d*3+roll(4); // tough enough to survive multiple rounds
+  const rw=Math.min(1+d,5);
+  return{name:n,nk,hp,rw};}
 const E={
-flach:[d=>({text:ft("{adj} Handelsschiff der {sn} kreuzt euren Kurs."),type:"choice",opts:["Handeln","Überfallen","Vorbei"],rews:[{gold:3+roll(5),ruhm:1},{combat:mkE("Handelswachen",d),reward:{gold:10+roll(8),ruhm:2,fame:1}},{}]}),d=>({text:ft("Treibgut der {sn}! Faesser mit {cargo}!"),type:"loot",gold:3+roll(6),ruhm:1}),d=>({text:ft("{cn} tauchen auf!"),type:"combat",enemy:mkE(ft("{cn}"),d),reward:{gold:roll(5),ruhm:2,fame:1}}),d=>({text:ft("Fischer bieten Fang an."),type:"heal",amount:2+roll(2)}),d=>({text:ft("Flaschenpost! {adj} Schatzkarte von {pn}!"),type:"loot",ruhm:3,fame:1}),d=>({text:ft("{adj} Kauffahrteischiff mit {cargo} in Seenot!"),type:"choice",opts:["Retten","Plündern","Ignorieren"],rews:[{ruhm:4,fame:2,gold:roll(5)},{gold:10+roll(8),ruhm:-1},{}]}),d=>({text:ft("Delfine! Moral steigt!"),type:"loot",ruhm:1,rum:2}),d=>({text:ft("Marine-Kutter! Schnell reagieren!"),type:"skilltest",stat:"ge",diff:4+d,pass:{ruhm:3,fame:1},fail:{combat:mkE("Marine",d+1),reward:{gold:12,ruhm:3,fame:2}}}),d=>({text:ft("{pn} fordert zum Würfelduell!"),type:"choice",opts:["Annehmen","Nein"],rews:[Math.random()>.5?{gold:8,ruhm:2,fame:1}:{gold:-5},{}]}),d=>({text:ft("Ausguck: {adj} Insel!"),type:"skilltest",stat:"in_",diff:3+d,pass:{gold:6+roll(8),ruhm:3,fame:2},fail:{ruhm:1}}),d=>({text:ft("Sturm! Navigator muss steuern!"),type:"skilltest",stat:"ge",diff:5+d,pass:{ruhm:3,fame:1},fail:{gold:-3}}),d=>({text:ft("Ruhige See. Guter Tag."),type:"nothing"}),d=>({text:ft("Alter Matrose auf Fass: kennt {tn}!"),type:"loot",ruhm:4,fame:2}),d=>({text:ft("{adj} Handelsposten auf kleiner Insel."),type:"trade",gold:roll(5)})],
+flach:[d=>({text:ft("{adj} Handelsschiff der {sn} kreuzt euren Kurs."),type:"choice",opts:["Handeln","Überfallen","Vorbei"],rews:[{gold:3+roll(5),ruhm:1},{combat:mkE("Handelswachen",d),reward:{gold:10+roll(8),ruhm:2,fame:1}},{}]}),d=>({text:ft("Treibgut der {sn}! Faesser mit {cargo}!"),type:"loot",gold:3+roll(6),ruhm:1}),d=>({text:ft("{cn} tauchen auf!"),type:"combat",enemy:mkE(ft("{cn}"),d),reward:{gold:roll(5),ruhm:2,fame:1}}),d=>({text:ft("Fischer bieten Fang an."),type:"heal",amount:2+roll(2)}),d=>({text:ft("Flaschenpost! {adj} Schatzkarte von {pn}!"),type:"loot",gold:2+roll(4),ruhm:3,fame:1}),d=>({text:ft("{adj} Kauffahrteischiff mit {cargo} in Seenot!"),type:"choice",opts:["Retten","Plündern","Ignorieren"],rews:[{ruhm:4,fame:2,gold:roll(5)},{gold:10+roll(8),ruhm:-1},{}]}),d=>({text:ft("Delfine! Moral steigt!"),type:"loot",gold:1+roll(3),ruhm:1,rum:2}),d=>({text:ft("Marine-Kutter! Schnell reagieren!"),type:"skilltest",stat:"ge",diff:4+d,pass:{ruhm:3,fame:1},fail:{combat:mkE("Marine",d+1),reward:{gold:12,ruhm:3,fame:2}}}),d=>({text:ft("{pn} fordert zum Würfelduell!"),type:"choice",opts:["Annehmen","Nein"],rews:[Math.random()>.5?{gold:8,ruhm:2,fame:1}:{gold:-5},{}]}),d=>({text:ft("Ausguck: {adj} Insel!"),type:"skilltest",stat:"in_",diff:3+d,pass:{gold:6+roll(8),ruhm:3,fame:2},fail:{ruhm:1}}),d=>({text:ft("Sturm! Navigator muss steuern!"),type:"skilltest",stat:"ge",diff:5+d,pass:{ruhm:3,fame:1},fail:{gold:-3}}),d=>({text:ft("Ruhige See — eure Crew fischt und findet dabei Gold im Bauch eines Fisches!"),type:"loot",gold:2+roll(4),ruhm:1}),d=>({text:ft("Alter Matrose auf Fass: kennt {tn}! Er zeichnet euch eine Karte."),type:"loot",gold:3+roll(3),ruhm:4,fame:2}),d=>({text:ft("{adj} Handelsposten auf kleiner Insel."),type:"trade",gold:roll(5)})],
 handel:[d=>({text:ft("Galeone {sn} mit {cargo}!"),type:"choice",opts:["Überfallen","Handeln","Lassen"],rews:[{combat:mkE("Galeonen-Wachen",d+1),reward:{gold:15+roll(15),ruhm:3,fame:2}},{gold:5+roll(5)},{}]}),d=>({text:ft("Konvoi! Nachtangriff?"),type:"skilltest",stat:"ge",diff:5+d,pass:{gold:20+roll(10),ruhm:4,fame:2},fail:{combat:mkE("Konvoi-Eskorte",d+2),reward:{gold:25+roll(15),ruhm:5,fame:3}}}),d=>({text:ft("Schmuggler {pn} bietet {cargo}."),type:"skilltest",stat:"in_",diff:4+d,pass:{gold:5,ruhm:2},fail:{gold:-8}}),d=>({text:ft("Sinkender Frachter! {cargo}!"),type:"loot",gold:6+roll(10),ruhm:2}),d=>({text:ft("Marine-Fregatte {sn}! Kampf!"),type:"combat",enemy:mkE("Marine-Fregatte",d+2),reward:{gold:15+roll(10),ruhm:4,fame:3}}),d=>({text:ft("Passagierschiff!"),type:"choice",opts:["Überfallen","Lassen"],rews:[{combat:mkE("Leibwaechter",d),reward:{gold:20+roll(10),ruhm:2,fame:2}},{ruhm:1}]}),d=>({text:ft("Treibende Faesser mit {cargo}."),type:"loot",gold:4+roll(6),ruhm:1})],
 sumpf:[d=>({text:ft("{adj} Krokodil!"),type:"combat",enemy:mkE("Sumpfkrokodil",d),reward:{gold:roll(4),ruhm:2,fame:1}}),d=>({text:ft("Giftnebel! Stärke!"),type:"skilltest",stat:"st",diff:4+d,pass:{ruhm:3,fame:1},fail:{dmgAll:1}}),d=>({text:ft("Voodoo-Priesterin {pn}."),type:"choice",opts:["Besuchen","Meiden"],rews:[Math.random()>.4?{ruhm:4,fame:2,heal:3,removeCurse:true}:{curse:true},{}]}),d=>({text:ft("Versunkenes Piratenlager!"),type:"loot",gold:6+roll(8),ruhm:2,fame:1}),d=>({text:ft("{cn} aus dem Morast!"),type:"combat",enemy:mkE(ft("{cn}"),d+1),reward:{gold:roll(6),ruhm:3,fame:2}}),d=>({text:ft("Geheimer Wasserweg!"),type:"skilltest",stat:"in_",diff:4+d,pass:{ruhm:4,fame:2},fail:{ruhm:0}})],
 riff:[d=>({text:ft("Schiff auf {adj} Riff!"),type:"skilltest",stat:"ge",diff:4+d,pass:{ruhm:2},fail:{gold:-5}}),d=>({text:ft("Gold unter Wasser!"),type:"skilltest",stat:"ge",diff:3+d,pass:{gold:8+roll(10),ruhm:2,fame:1},fail:{dmgAll:1}}),d=>({text:ft("{cn} am Riff!"),type:"combat",enemy:mkE(ft("{cn}"),d),reward:{gold:roll(6),ruhm:3,fame:1}}),d=>({text:ft("Wrack der {sn}!"),type:"choice",opts:["Erkunden","Weiter"],rews:[{gold:10+roll(8),ruhm:4,fame:2},{}]}),d=>({text:ft("Perlenmuscheln!"),type:"loot",gold:5+roll(8),ruhm:2}),d=>({text:ft("{adj} Unterwasserhöhle!"),type:"choice",opts:["Tauchen","Nein"],rews:[Math.random()>.5?{gold:15+roll(10),ruhm:5,fame:3}:{combat:mkE("Höhlenwächter",d+2),reward:{gold:20,ruhm:4,fame:3}},{}]})],
@@ -145,13 +151,13 @@ nebel:[d=>({text:ft("Schreie! Schiff von {cn} angegriffen!"),type:"choice",opts:
 festung:[d=>({text:ft("Kanonenbeschuss!"),type:"combat",enemy:mkE("Festungskanonen",d+3),reward:{gold:15+roll(10),ruhm:6,fame:4}}),d=>({text:ft("{adj} Geheimgang!"),type:"skilltest",stat:"ge",diff:6+d,pass:{gold:25+roll(15),ruhm:7,fame:5},fail:{combat:mkE("Festungswachen",d+2),reward:{gold:20,ruhm:6,fame:4}}}),d=>({text:ft("Gefangene Piraten!"),type:"choice",opts:["Befreien","Nein"],rews:[{combat:mkE("Garnison",d+2),reward:{ruhm:8,fame:5,gold:5}},{}]}),d=>({text:ft("Schatzkammer!"),type:"choice",opts:["Überfall!","Schleichen"],rews:[{combat:mkE("Elitegarde",d+3),reward:{gold:30+roll(20),ruhm:8,fame:5}},{gold:15+roll(10),ruhm:5,fame:3}]})],
 vulkan:[d=>({text:ft("Lavastroeme!"),type:"skilltest",stat:"ge",diff:5+d,pass:{ruhm:5,fame:3},fail:{dmgAll:2}}),d=>({text:ft("{adj} Drache bewacht {tn}!"),type:"combat",enemy:mkE("Vulkandrache",d+3),reward:{gold:20+roll(15),ruhm:8,fame:5}}),d=>({text:ft("Heisse Quellen!"),type:"heal",amount:4}),d=>({text:ft("Obsidianwaffen!"),type:"loot",gold:10+roll(8),ruhm:4,fame:2}),d=>({text:ft("Feuerelementar!"),type:"combat",enemy:mkE("Feuerelementar",d+3),reward:{gold:12+roll(10),ruhm:6,fame:4}})],
 bermuda:[d=>({text:ft("Zeitverzerrung!"),type:"skilltest",stat:"in_",diff:6+d,pass:{ruhm:6,fame:4},fail:{curse:true}}),d=>({text:ft("Dimensionsriss!"),type:"choice",opts:["Hindurch!","Nein"],rews:[Math.random()>.4?{gold:30+roll(20),ruhm:8,fame:5}:{combat:mkE("Dimensionswächter",d+3),reward:{gold:20,ruhm:6,fame:4}},{ruhm:2}]}),d=>({text:ft("Strudel!"),type:"skilltest",stat:"st",diff:6+d,pass:{ruhm:5,fame:3},fail:{gold:-10}}),d=>({text:ft("{cn} aus anderer Dimension!"),type:"combat",enemy:mkE("Dimensionsbestie",d+3),reward:{gold:15+roll(10),ruhm:7,fame:4}})],
-tiefsee:[d=>({text:ft("DER KRAKEN!!!"),type:"combat",enemy:mkE("Kraken",d+4),reward:{gold:20+roll(15),ruhm:10,fame:6}}),d=>({text:ft("Versunkene Stadt!"),type:"skilltest",stat:"ge",diff:6+d,pass:{gold:15+roll(15),ruhm:7,fame:4},fail:{dmgAll:2}}),d=>({text:ft("Leviathan!"),type:"combat",enemy:mkE("Leviathan",d+5),reward:{gold:25+roll(20),ruhm:12,fame:8}}),d=>({text:ft("Biolumineszenz!"),type:"loot",ruhm:4,fame:3})],
+tiefsee:[d=>({text:ft("DER KRAKEN!!!"),type:"combat",enemy:mkE("Kraken",d+4),reward:{gold:20+roll(15),ruhm:10,fame:6}}),d=>({text:ft("Versunkene Stadt!"),type:"skilltest",stat:"ge",diff:6+d,pass:{gold:15+roll(15),ruhm:7,fame:4},fail:{dmgAll:2}}),d=>({text:ft("Leviathan!"),type:"combat",enemy:mkE("Leviathan",d+5),reward:{gold:25+roll(20),ruhm:12,fame:8}}),d=>({text:ft("Biolumineszenz!"),type:"loot",gold:3+roll(5),ruhm:4,fame:3})],
 unterwasser:[d=>({text:ft("Davy Jones!"),type:"choice",opts:["Verhandeln","Kaempfen"],rews:[{ruhm:8,fame:5},{combat:mkE("Davy Jones",d+5),reward:{gold:30,ruhm:15,fame:10}}]}),d=>({text:ft("Jones Schatzkammer!"),type:"loot",gold:20+roll(20),ruhm:8,fame:5}),d=>({text:ft("{cn} in Jones Diensten!"),type:"combat",enemy:mkE("Jones Wächter",d+4),reward:{gold:15+roll(10),ruhm:8,fame:5}}),d=>({text:ft("{adj} Riesenperle — {tn}!"),type:"loot",gold:25+roll(15),ruhm:10,fame:6})],
 schatz:[d=>({text:ft("X markiert die Stelle!"),type:"skilltest",stat:"in_",diff:5+d,pass:{gold:25+roll(20),ruhm:8,fame:5},fail:{combat:mkE("Schatzhueter",d+3),reward:{gold:30,ruhm:10,fame:6}}}),d=>({text:ft("{adj} Schatzkammer von {pn}!"),type:"loot",gold:20+roll(15),ruhm:8,fame:5}),d=>({text:ft("Pirat {pn} ist schon da!"),type:"combat",enemy:mkE(ft("Kpt. {pn}"),d+3),reward:{gold:20+roll(15),ruhm:6,fame:4}}),d=>({text:ft("DER LEGENDAERE SCHATZ! {tn}!"),type:"legendary"}),d=>({text:ft("Fallen! Geschick!"),type:"skilltest",stat:"ge",diff:6+d,pass:{gold:15+roll(10),ruhm:5,fame:3},fail:{dmgAll:3}})],
 thron:[d=>({text:ft("Piratenrat! Duell!"),type:"combat",enemy:mkE("Rivalen",d+4),reward:{ruhm:15,fame:10,gold:20}}),d=>({text:ft("{adj} Krone der Meere!"),type:"legendary"}),d=>({text:ft("{pn} fordert zum Duell!"),type:"combat",enemy:mkE("Piratenkönig",d+5),reward:{ruhm:20,fame:15,gold:30}})],
 verlies:[d=>({text:ft("Giftschlangen!"),type:"skilltest",stat:"ge",diff:5+d,pass:{gold:10+roll(8),ruhm:4,fame:3},fail:{combat:mkE("Riesenschlangen",d+2),reward:{gold:10,ruhm:4,fame:3}}}),d=>({text:ft("{adj} Schatztruhe — Fallen!"),type:"skilltest",stat:"ge",diff:4+d,pass:{gold:12+roll(10),ruhm:4,fame:2},fail:{dmgAll:2}}),d=>({text:ft("Skelette. Bei einem: {tn}!"),type:"loot",gold:8+roll(8),ruhm:5,fame:3}),d=>({text:ft("{cn} bewacht den Raum!"),type:"combat",enemy:mkE(ft("{cn}"),d+3),reward:{gold:15+roll(10),ruhm:6,fame:4}})],
-hafen:[d=>({text:ft("Prugelei! {pn} beleidigt!"),type:"skilltest",stat:"st",diff:3+d,pass:{ruhm:2,fame:1,gold:3},fail:{gold:-2}}),d=>({text:ft("Gerüchte: {tn} {loc}!"),type:"loot",ruhm:3,fame:2}),d=>({text:ft("Crew feiert! Rum fließt!"),type:"loot",ruhm:1,rum:3}),d=>({text:ft("Taschendieb!"),type:"skilltest",stat:"ge",diff:3+d,pass:{gold:5,ruhm:2},fail:{gold:-4}}),d=>({text:ft("{pn}: Geheimwissen für 8G."),type:"choice",opts:["Kaufen","Nein"],rews:[{gold:-8,ruhm:4,fame:2},{}]}),d=>({text:ft("Crew will an Land!"),type:"choice",opts:["Erlauben(-5G)","Nein"],rews:[{gold:-5,rum:5,ruhm:1},{ruhm:-1}]})],
-dorf:[d=>({text:ft("Fischer: {cn} terrorisiert!"),type:"combat",enemy:mkE(ft("{cn}"),d),reward:{gold:5+roll(5),ruhm:3,fame:2}}),d=>({text:ft("Aeltester kennt {adj} Schatz."),type:"loot",ruhm:3,fame:2}),d=>({text:ft("Frische Vorräte!"),type:"heal",amount:3}),d=>({text:ft("Kinder bewundern Crew!"),type:"loot",ruhm:2,rum:1})],
+hafen:[d=>({text:ft("Prugelei! {pn} beleidigt!"),type:"skilltest",stat:"st",diff:3+d,pass:{ruhm:2,fame:1,gold:3},fail:{gold:-2}}),d=>({text:ft("Gerüchte: {tn} {loc}!"),type:"loot",gold:2+roll(5),ruhm:3,fame:2}),d=>({text:ft("Crew feiert! Rum fließt!"),type:"loot",gold:1+roll(3),ruhm:1,rum:3}),d=>({text:ft("Taschendieb!"),type:"skilltest",stat:"ge",diff:3+d,pass:{gold:5,ruhm:2},fail:{gold:-4}}),d=>({text:ft("{pn}: Geheimwissen für 8G."),type:"choice",opts:["Kaufen","Nein"],rews:[{gold:-8,ruhm:4,fame:2},{}]}),d=>({text:ft("Crew will an Land!"),type:"choice",opts:["Erlauben(-5G)","Nein"],rews:[{gold:-5,rum:5,ruhm:1},{ruhm:-1}]})],
+dorf:[d=>({text:ft("Fischer: {cn} terrorisiert!"),type:"combat",enemy:mkE(ft("{cn}"),d),reward:{gold:5+roll(5),ruhm:3,fame:2}}),d=>({text:ft("Aeltester kennt {adj} Schatz."),type:"loot",gold:2+roll(5),ruhm:3,fame:2}),d=>({text:ft("Frische Vorräte!"),type:"heal",amount:3}),d=>({text:ft("Kinder bewundern Crew!"),type:"loot",gold:1+roll(3),ruhm:2,rum:1})],
 };
 function genEv(rType,fame){const d=Math.floor(fame/10);const pool=E[rType]||E.flach;return{...pick(pool)(d),w100:d100()};}
 
@@ -287,14 +293,21 @@ const explore=()=>{if(!isMyTurn||!aliveHeroes.length)return;setEv(genEv(curReg.t
 const applyReward=async(rw,g,pi)=>{
   const bonus=me.fame>=75?2:1;const halfGold=myCurses.some(c=>c.halfGold);
   let goldGain=Math.round((rw.gold||0)*bonus);if(halfGold&&goldGain>0)goldGain=Math.floor(goldGain/2);
+  const ruhmGain=Math.round((rw.ruhm||0)*bonus);const fameGain=Math.round((rw.fame||0)*bonus);
   g.players[pi].gold=Math.max(0,g.players[pi].gold+goldGain);
-  g.players[pi].ruhm=Math.max(0,(g.players[pi].ruhm||0)+Math.round((rw.ruhm||0)*bonus));
-  g.players[pi].fame=Math.max(0,(g.players[pi].fame||0)+Math.round((rw.fame||0)*bonus));
+  g.players[pi].ruhm=Math.max(0,(g.players[pi].ruhm||0)+ruhmGain);
+  g.players[pi].fame=Math.max(0,(g.players[pi].fame||0)+fameGain);
   if(rw.rum)g.players[pi].rum=Math.max(0,(g.players[pi].rum||0)+rw.rum);
   if(rw.heal&&rw.heal>0)g.players[pi].heroes.forEach(h=>{if(h.hp>0)h.hp=Math.min(h.maxHp,h.hp+rw.heal);});
   if(rw.dmgAll)g.players[pi].heroes.forEach(h=>{if(h.hp>0)h.hp=Math.max(0,h.hp-rw.dmgAll);});
-  if(rw.curse){const c={...pick(CURSES)};g.players[pi].curses=[...(g.players[pi].curses||[]),c];setMsg(`VERFLUCHT: ${c.name}!`);}
-  if(rw.removeCurse&&(g.players[pi].curses||[]).length>0){g.players[pi].curses.pop();setMsg("Fluch entfernt!");}
+  // Reward feedback toast
+  const parts=[];if(goldGain>0)parts.push(`+${goldGain}💰`);if(goldGain<0)parts.push(`${goldGain}💰`);
+  if(ruhmGain>0)parts.push(`+${ruhmGain}🏆`);if(fameGain>0)parts.push(`+${fameGain}⭐`);
+  if(rw.rum>0)parts.push(`+${rw.rum}🍺`);if(rw.heal>0)parts.push(`+${rw.heal}❤️`);
+  if(rw.dmgAll)parts.push(`-${rw.dmgAll}HP alle!`);
+  if(rw.curse){const c={...pick(CURSES)};g.players[pi].curses=[...(g.players[pi].curses||[]),c];parts.push(`FLUCH: ${c.name}!`);}
+  if(rw.removeCurse&&(g.players[pi].curses||[]).length>0){g.players[pi].curses.pop();parts.push("Fluch gebrochen!");}
+  if(parts.length>0)setMsg(parts.join(" "));
   await checkPartyWipe(g,pi);
   if(g.players[pi].fame>=100){g.winner={id:playerId,name:g.players[pi].name,type:"fame"};g.phase="finished";await api.save(g);setGame(g);setPhase("finished");return true;}
   return false;
@@ -321,31 +334,41 @@ const resolveSkillTest=async(passed)=>{
 };
 
 // COMBAT (UltraQuest-style)
-const startCombat=(enemy,reward)=>{setCombat({enemy:{...enemy,curHp:enemy.hp},reward,round:1});setCLog([`Kampf: ${enemy.name}!`]);setPhase("combat");};
+const startCombat=(enemy,reward)=>{setCombat({enemy:{...enemy,curHp:enemy.hp},reward,round:1});setCLog([`Kampf gegen ${enemy.name}! (NK:${enemy.nk} HP:${enemy.hp} RW:${enemy.rw})`]);setPhase("combat");};
 const doCombatRound=()=>{
   const alive=me.heroes.filter(h=>h.hp>0);if(!alive.length)return;
-  let pTotal=0;const hRolls=[];
-  alive.forEach(h=>{const r=d6();const nk=hNK(h,myCurses);pTotal+=r+nk;hRolls.push({name:h.name,r,nk,t:r+nk});});
-  const shipBonus=isSea?myShip.kan:0;pTotal+=shipBonus;
-  const eR1=d6(),eR2=d6(),eTotal=eR1+eR2+combat.enemy.nk;
-  const logs=[...cLog];logs.push(`-- Runde ${combat.round} --`);
-  hRolls.forEach(h=>logs.push(`  ${h.name}: W6(${h.r})+${h.nk}=${h.t}`));
-  if(shipBonus>0)logs.push(`  Kanonen: +${shipBonus}`);
-  logs.push(`  CREW: ${pTotal}`);
-  logs.push(`  ${combat.enemy.name}: W6(${eR1}+${eR2})+${combat.enemy.nk}=${eTotal}`);
+  // UltraQuest-style: ONE W6 per side + total NK
+  const groupNK=alive.reduce((s,h)=>s+hNK(h,myCurses),0);
+  const shipBonus=isSea?myShip.kan:0;
+  const pRoll=d6();const pTotal=pRoll+groupNK+shipBonus;
+  const eRoll=d6();const eTotal=eRoll+combat.enemy.nk;
+  const logs=[...cLog];logs.push(`── Runde ${combat.round} ──`);
+  logs.push(`  Crew: W6(${pRoll}) + ${groupNK}NK${shipBonus?` + ${shipBonus}Kan`:""} = ${pTotal}`);
+  logs.push(`  ${combat.enemy.name}: W6(${eRoll}) + ${combat.enemy.nk}NK = ${eTotal}`);
   const ne={...combat.enemy};
-  if(pTotal>eTotal){const dmg=Math.max(1,pTotal-eTotal-(ne.rw||0));ne.curHp=Math.max(0,ne.curHp-dmg);logs.push(`  => ${dmg} Schaden! HP:${ne.curHp}`);}
-  else if(eTotal>pTotal){const rawDmg=eTotal-pTotal;
-    const target=[...alive].sort((a,b)=>a.hp-b.hp)[0]; // weakest hero
-    const shipDef=isSea?myShip.rumpf:0; // ship hull as defense on sea
-    const absorbed=hRW(target)+shipDef;const finalDmg=Math.max(0,rawDmg-absorbed);
-    if(finalDmg>0){target.hp=Math.max(0,target.hp-finalDmg);logs.push(`  => ${target.name}: ${finalDmg}dmg (RW:${absorbed}) HP:${target.hp}`);}
-    else logs.push(`  => Abgewehrt! (RW:${absorbed})`);
-  } else logs.push(`  => Unentschieden!`);
+  if(pTotal>eTotal){
+    const dmg=Math.max(1,pTotal-eTotal-(ne.rw||0));
+    ne.curHp=Math.max(0,ne.curHp-dmg);
+    logs.push(`  ⚔️ Treffer! ${dmg} Schaden → HP:${ne.curHp}`);
+  } else if(eTotal>pTotal){
+    const rawDmg=eTotal-pTotal;
+    const target=[...alive].sort((a,b)=>a.hp-b.hp)[0];
+    const shipDef=isSea?myShip.rumpf:0;
+    const absorbed=hRW(target)+shipDef;const finalDmg=Math.max(1,rawDmg-absorbed);
+    target.hp=Math.max(0,target.hp-finalDmg);
+    logs.push(`  💥 ${target.name}: ${finalDmg} Schaden (RW:${absorbed}) → HP:${target.hp}`);
+  } else logs.push(`  ⚖️ Klingen prallen ab!`);
   setCombat({...combat,enemy:ne,round:combat.round+1});setCLog(logs);
 };
 const endCombat=async won=>{const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
-  if(won&&combat.reward)await applyReward(combat.reward,g,pi);
+  if(won&&combat.reward){
+    const rw=combat.reward;const bonus=me.fame>=75?2:1;const halfG=myCurses.some(c=>c.halfGold);
+    let gGain=Math.round((rw.gold||0)*bonus);if(halfG&&gGain>0)gGain=Math.floor(gGain/2);
+    g.players[pi].gold=Math.max(0,g.players[pi].gold+gGain);
+    g.players[pi].ruhm=Math.max(0,(g.players[pi].ruhm||0)+Math.round((rw.ruhm||0)*bonus));
+    g.players[pi].fame=Math.max(0,(g.players[pi].fame||0)+Math.round((rw.fame||0)*bonus));
+    setMsg(`Beute: ${gGain>0?`+${gGain}💰 `:""}${rw.ruhm?`+${Math.round((rw.ruhm||0)*bonus)}🏆 `:""}${rw.fame?`+${Math.round((rw.fame||0)*bonus)}⭐`:""}`);
+  }
   g.players[pi].heroes=me.heroes.map(h=>({...h}));
   await checkPartyWipe(g,pi);
   if(g.players[pi].fame>=100){g.winner={id:playerId,name:g.players[pi].name,type:"fame"};g.phase="finished";await api.save(g);setGame(g);setPhase("finished");return;}
@@ -613,7 +636,7 @@ const EventScreen=()=>(<div style={{minHeight:"100vh",padding:20,display:"flex",
     {ev?.type==="choice"&&<div style={{display:"grid",gap:6}}>{ev.opts.map((o,i)=><Btn key={i} primary={i===0} onClick={()=>resolveEvent(i)}>{o}</Btn>)}</div>}
     {ev?.type==="combat"&&<Btn primary onClick={()=>resolveEvent()}>Kampf!</Btn>}
     {ev?.type==="legendary"&&<div><div style={{textAlign:"center",fontSize:28,marginBottom:10}}>👑💎</div><Btn primary onClick={()=>resolveEvent()}>PIRATENKOENIG!</Btn></div>}
-    {["loot","heal","nothing","trade"].includes(ev?.type)&&<div>
+    {["loot","heal","trade"].includes(ev?.type)&&<div>
       {((ev?.gold||0)>0||(ev?.ruhm||0)>0||(ev?.fame||0)>0)&&<div style={{textAlign:"center",marginBottom:10,color:T.green,fontSize:13}}>
         {ev?.gold>0&&`💰+${ev.gold} `}{ev?.ruhm>0&&`🏆+${ev.ruhm} `}{ev?.fame>0&&`⭐+${ev.fame}`}</div>}
       {ev?.type==="heal"&&<div style={{textAlign:"center",marginBottom:10,color:T.green}}>Crew geheilt!</div>}
