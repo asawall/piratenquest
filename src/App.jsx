@@ -322,6 +322,13 @@ const fonts=`@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@4
 // ═══════════════════════════════════════════════════════════
 //  APP
 // ═══════════════════════════════════════════════════════════
+// ── UI Primitives (OUTSIDE App to prevent remount on re-render) ──
+const Btn=({children,onClick,primary,danger,disabled,small,style:s})=>(<button onClick={onClick} disabled={disabled} style={{padding:small?"8px 12px":"14px 20px",border:`1px solid ${danger?T.red:T.gold}`,borderRadius:10,background:primary?`linear-gradient(135deg,${T.gold},${T.goldD})`:danger?T.red+"22":T.card,color:primary?T.bg:danger?"#ff8a80":T.gold,fontFamily:"'Cinzel',serif",fontSize:small?12:14,fontWeight:700,cursor:disabled?"default":"pointer",opacity:disabled?0.4:1,width:"100%",textAlign:"center",transition:"all .15s",...s}}>{children}</button>);
+const Card=({children,style:s})=>(<div style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:14,padding:14,marginBottom:10,...s}}>{children}</div>);
+const Badge=({children,color})=>(<span style={{display:"inline-block",padding:"2px 8px",borderRadius:20,background:(color||T.gold)+"28",color:color||T.gold,fontSize:11,fontWeight:700,fontFamily:"'Cinzel',serif",marginRight:4}}>{children}</span>);
+const StatBox=({label,value,color})=>(<div style={{textAlign:"center",flex:1}}><div style={{fontSize:9,color:T.txtD,fontFamily:"'Cinzel',serif"}}>{label}</div><div style={{fontSize:17,fontWeight:900,color:color||T.gold,fontFamily:"'Cinzel',serif"}}>{value}</div></div>);
+const DiceFace=({val,dropped})=>(<div style={{width:40,height:40,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",background:dropped?"#44444444":T.goldD+"44",border:`2px solid ${dropped?T.red+"66":T.gold}`,color:dropped?T.red:T.goldL,fontSize:20,fontWeight:900,fontFamily:"'Cinzel',serif",opacity:dropped?0.4:1,textDecoration:dropped?"line-through":"none"}}>{val}</div>);
+
 export default function App(){
   const[phase,setPhase]=useState("menu");
   const[gameId,setGameId]=useState("");const[playerId,setPlayerId]=useState("");const[playerName,setPlayerName]=useState("");
@@ -345,14 +352,9 @@ export default function App(){
   const myPerks=FAME_PERKS.filter(p=>p.fame<=(me?.fame||0));
 
   // ── UI Components ──
-  const Btn=({children,onClick,primary,danger,disabled,small,style:s})=>(<button onClick={onClick} disabled={disabled} style={{padding:small?"8px 12px":"14px 20px",border:`1px solid ${danger?T.red:T.gold}`,borderRadius:10,background:primary?`linear-gradient(135deg,${T.gold},${T.goldD})`:danger?T.red+"22":T.card,color:primary?T.bg:danger?"#ff8a80":T.gold,fontFamily:"'Cinzel',serif",fontSize:small?12:14,fontWeight:700,cursor:disabled?"default":"pointer",opacity:disabled?0.4:1,width:"100%",textAlign:"center",transition:"all .15s",...s}}>{children}</button>);
-  const Card=({children,style:s})=>(<div style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:14,padding:14,marginBottom:10,...s}}>{children}</div>);
-  const Badge=({children,color})=>(<span style={{display:"inline-block",padding:"2px 8px",borderRadius:20,background:(color||T.gold)+"28",color:color||T.gold,fontSize:11,fontWeight:700,fontFamily:"'Cinzel',serif",marginRight:4}}>{children}</span>);
-  const Stat=({label,value,color})=>(<div style={{textAlign:"center",flex:1}}><div style={{fontSize:9,color:T.txtD,fontFamily:"'Cinzel',serif"}}>{label}</div><div style={{fontSize:17,fontWeight:900,color:color||T.gold,fontFamily:"'Cinzel',serif"}}>{value}</div></div>);
   const Toast=()=>msg?(<div onClick={()=>setMsg("")} style={{position:"fixed",top:12,left:"50%",transform:"translateX(-50%)",background:T.goldD,color:T.parch,padding:"8px 20px",borderRadius:12,zIndex:999,fontFamily:"'Crimson Text',serif",fontSize:14,boxShadow:"0 4px 24px #000a",cursor:"pointer",maxWidth:"88vw"}}>{msg}</div>):null;
 
   // ── DICE VISUAL ──
-  const DiceFace=({val,dropped})=>(<div style={{width:40,height:40,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",background:dropped?"#44444444":T.goldD+"44",border:`2px solid ${dropped?T.red+"66":T.gold}`,color:dropped?T.red:T.goldL,fontSize:20,fontWeight:900,fontFamily:"'Cinzel',serif",opacity:dropped?0.4:1,textDecoration:dropped?"line-through":"none"}}>{val}</div>);
 
   // ── ACTIONS ──
   const createGame=async()=>{if(!playerName.trim()){setMsg("Name!");return;}const gid=uid(),pid=uid();
@@ -546,10 +548,10 @@ export default function App(){
         <Card style={{background:T.bg}}>
           <div style={{fontSize:11,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:4}}>ENDWERTE (Rasse + Würfel)</div>
           <div style={{display:"flex",gap:4}}>
-            <Stat label="BW" value={`${RACES[tRace].bw}+${statAssign.bw}=${RACES[tRace].bw+statAssign.bw}`}/>
-            <Stat label="ST" value={`${RACES[tRace].st}+${statAssign.st}=${RACES[tRace].st+statAssign.st}`}/>
-            <Stat label="GE" value={`${RACES[tRace].ge}+${statAssign.ge}=${RACES[tRace].ge+statAssign.ge}`}/>
-            <Stat label="IN" value={`${RACES[tRace].in_}+${statAssign.in_}=${RACES[tRace].in_+statAssign.in_}`}/>
+            <StatBox label="BW" value={`${RACES[tRace].bw}+${statAssign.bw}=${RACES[tRace].bw+statAssign.bw}`}/>
+            <StatBox label="ST" value={`${RACES[tRace].st}+${statAssign.st}=${RACES[tRace].st+statAssign.st}`}/>
+            <StatBox label="GE" value={`${RACES[tRace].ge}+${statAssign.ge}=${RACES[tRace].ge+statAssign.ge}`}/>
+            <StatBox label="IN" value={`${RACES[tRace].in_}+${statAssign.in_}=${RACES[tRace].in_+statAssign.in_}`}/>
           </div>
         </Card>
         <div style={{marginTop:8,display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
@@ -620,7 +622,7 @@ export default function App(){
       <div style={{display:"flex",alignItems:"center",gap:3,marginBottom:4}}>
         <span style={{fontSize:14}}>{h.emoji}</span><span style={{fontSize:11,fontWeight:700,color:T.parch,fontFamily:"'Cinzel',serif",flex:1}}>{h.name}</span></div>
       <Badge>{PROFS[h.profession]?.label}</Badge>{h.hp<=0&&<Badge color={T.red}>TOT</Badge>}
-      <div style={{display:"flex",marginTop:5,gap:1}}><Stat label="HP" value={`${h.hp}/${h.maxHp}`} color={h.hp<=2?T.red:T.green}/><Stat label="ST" value={h.st}/><Stat label="GE" value={h.ge}/><Stat label="IN" value={h.in_}/></div>
+      <div style={{display:"flex",marginTop:5,gap:1}}><StatBox label="HP" value={`${h.hp}/${h.maxHp}`} color={h.hp<=2?T.red:T.green}/><StatBox label="ST" value={h.st}/><StatBox label="GE" value={h.ge}/><StatBox label="IN" value={h.in_}/></div>
       {(h.equipment||[]).length>0&&<div style={{marginTop:3,fontSize:9,color:T.txtD}}>{h.equipment.map(e=>e.emoji).join("")}</div>}
       {(h.skills||[]).length>1&&<div style={{marginTop:2,fontSize:8,color:T.gold+"88"}}>{h.skills.slice(1).join(", ")}</div>}
     </Card>))}</div>);
@@ -665,7 +667,7 @@ export default function App(){
       <Card style={{textAlign:"center",borderColor:T.red+"44"}}>
         <div style={{fontSize:24,marginBottom:2}}>👹</div>
         <div style={{fontSize:16,color:T.red,fontFamily:"'Cinzel',serif"}}>{combat?.enemy?.name}</div>
-        <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:6}}><Stat label="HP" value={`${Math.max(0,combat?.enemy?.curHp)}/${combat?.enemy?.hp}`} color={T.red}/><Stat label="NK" value={combat?.enemy?.nk}/><Stat label="RW" value={combat?.enemy?.rw}/></div></Card>
+        <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:6}}><StatBox label="HP" value={`${Math.max(0,combat?.enemy?.curHp)}/${combat?.enemy?.hp}`} color={T.red}/><StatBox label="NK" value={combat?.enemy?.nk}/><StatBox label="RW" value={combat?.enemy?.rw}/></div></Card>
       {HeroCards()}
       <Card style={{maxHeight:100,overflow:"auto",background:T.bg}}>{cLog.map((l,i)=><div key={i} style={{fontSize:11,color:l.startsWith("✅")?T.green:l.startsWith("❌")?T.red:T.parch,padding:"1px 0"}}>{l}</div>)}</Card>
       {eDead?<div style={{marginTop:10}}><div style={{textAlign:"center",color:T.green,fontSize:15,fontFamily:"'Cinzel',serif",marginBottom:8}}>
@@ -724,7 +726,7 @@ export default function App(){
     <div style={{fontSize:16,color:T.parch,textAlign:"center",marginBottom:20}}>Kapitän {game?.winner?.name} herrscht über die Sieben Meere!</div>
     {game?.players?.map(p=>(<Card key={p.id} style={{width:"100%",maxWidth:300}}>
       <div style={{fontSize:15,color:T.gold,fontFamily:"'Cinzel',serif"}}>{p.name}</div>
-      <div style={{display:"flex",gap:6,marginTop:6}}><Stat label="⭐" value={p.fame}/><Stat label="🏆" value={p.ruhm}/><Stat label="💰" value={p.gold}/></div></Card>))}
+      <div style={{display:"flex",gap:6,marginTop:6}}><StatBox label="⭐" value={p.fame}/><StatBox label="🏆" value={p.ruhm}/><StatBox label="💰" value={p.gold}/></div></Card>))}
     <div style={{marginTop:20,width:"100%",maxWidth:300}}><Btn primary onClick={()=>{setPhase("menu");setGame(null);setGameId("");}}>🔄 Neues Spiel</Btn></div></div>);
 
   return(<div style={{background:T.bg,minHeight:"100vh",color:T.txt,fontFamily:"'Crimson Text',serif",maxWidth:600,margin:"0 auto"}}>
