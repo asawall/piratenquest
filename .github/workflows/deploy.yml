@@ -1,4 +1,4 @@
-name: Build & Deploy PiratenQuest
+name: Build & Push PiratenQuest
 
 on:
   push:
@@ -36,50 +36,5 @@ jobs:
             ghcr.io/asawall/piratenquest:latest
             ghcr.io/asawall/piratenquest:${{ github.sha }}
 
-      - name: Deploy to Server via SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: 46.224.164.200
-          username: root
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            echo "🏴‍☠️ Deploying PiratenQuest..."
-            
-            # Login to GHCR
-            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u asawall --password-stdin
-            
-            # Pull latest image
-            docker pull ghcr.io/asawall/piratenquest:latest
-            
-            # Stop old container if exists
-            docker stop piratenquest 2>/dev/null || true
-            docker rm piratenquest 2>/dev/null || true
-            
-            # Run new container
-            docker run -d \
-              --name piratenquest \
-              --restart unless-stopped \
-              -p 3030:3030 \
-              ghcr.io/asawall/piratenquest:latest
-            
-            # Setup Apache config if not exists
-            if [ ! -f /etc/httpd/conf.d/pq.vertriebsarchitekt.eu.conf ] && [ ! -f /etc/apache2/sites-available/pq.vertriebsarchitekt.eu.conf ]; then
-              # CentOS/RHEL
-              if [ -d /etc/httpd/conf.d ]; then
-                cat > /etc/httpd/conf.d/pq.vertriebsarchitekt.eu.conf << 'APACHECONF'
-            <VirtualHost *:80>
-                ServerName pq.vertriebsarchitekt.eu
-                ProxyPreserveHost On
-                ProxyPass / http://127.0.0.1:3030/
-                ProxyPassReverse / http://127.0.0.1:3030/
-                ErrorLog /var/log/httpd/pq.vertriebsarchitekt.eu-error.log
-            </VirtualHost>
-            APACHECONF
-                systemctl reload httpd 2>/dev/null || true
-              fi
-              
-              # Try SSL with certbot
-              certbot --apache -d pq.vertriebsarchitekt.eu --non-interactive --agree-tos --email andreas@sawall-partner.de 2>/dev/null || echo "Certbot SSL pending"
-            fi
-            
-            echo "✅ PiratenQuest deployed on pq.vertriebsarchitekt.eu"
+      - name: Deploy Info
+        run: echo "✅ Image pushed — Watchtower auto-pulls within 5min"
