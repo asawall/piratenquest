@@ -211,7 +211,7 @@ const[msg,setMsg]=useState("");const[testRes,setTestRes]=useState(null);
 const[setupIdx,setSetupIdx]=useState(0);const[heroes,setHeroes]=useState([null,null,null,null]);
 const[cStep,setCStep]=useState("name");
 const[selHero,setSelHero]=useState(0); // which hero selected in equip phase
-const[tGender,setTGender]=useState(null);
+
   const[tName,setTName]=useState("");const[tRace,setTRace]=useState(null);const[tProf,setTProf]=useState(null);
 const[diceRolls,setDiceRolls]=useState([]);const[statA,setStatA]=useState({bw:0,st:0,ge:0,in_:0});
 const[startGold,setStartGold]=useState(0);
@@ -251,10 +251,10 @@ const joinGame=async()=>{if(!playerName.trim()||!joinCode.trim()){setMsg("Name &
   await api.save(g);setGameId(g.id);setPlayerId(pid);setGame(g);setPhase("lobby");saveSessionInfo(g);};
 
 // Setup
-const startSetup=()=>{setSetupIdx(0);setHeroes([null,null,null,null]);setCStep("name");setTName("");setTGender(null);setTRace(null);setTProf(null);setDiceRolls([]);setStatA({bw:0,st:0,ge:0,in_:0});setStartGold(0);setPhase("setup");};
+const startSetup=()=>{setSetupIdx(0);setHeroes([null,null,null,null]);setCStep("name");setTName("");setTRace(null);setTProf(null);setDiceRolls([]);setStatA({bw:0,st:0,ge:0,in_:0});setStartGold(0);setPhase("setup");};
 const confirmHero=()=>{const h=mkHero(tName.trim(),tRace,tProf);const nh=[...heroes];nh[setupIdx]=h;setHeroes(nh);
   // After confirming: next hero or equip phase
-  if(setupIdx<3){setSetupIdx(setupIdx+1);setCStep("name");setTName("");setTGender(null);setTRace(null);setTProf(null);setDiceRolls([]);}
+  if(setupIdx<3){setSetupIdx(setupIdx+1);setCStep("name");setTName("");setTRace(null);setTProf(null);setDiceRolls([]);}
   else{setCStep("gold");setSelHero(0);}};
 const buyStartItem=(item)=>{if(startGold<item.cost)return;
   const h=heroes[selHero];
@@ -510,15 +510,15 @@ const SetupScreen=()=>(<div style={{minHeight:"100vh",padding:20}}>
     <div style={{fontSize:14,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:8}}>Name</div>
     <input placeholder="Name" value={tName} onChange={e=>setTName(e.target.value)} style={{width:"100%",padding:12,border:`1px solid ${T.border}`,borderRadius:8,background:T.cardL,color:T.parch,fontSize:16,boxSizing:"border-box",marginBottom:10}}/>
     <Btn primary onClick={()=>{if(!tName.trim()){setMsg("Name!");return;}setCStep("race");}}>Weiter</Btn></Card>}
-  {cStep==="race"&&<><BackBtn onClick={()=>setCStep("gender")} label="Geschlecht"/><div style={{fontSize:13,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:4}}>RASSE</div>
-      <Help text="BW=Bewegung, ST=Stärke, GE=Geschick, IN=Intelligenz, HP=Lebenspunkte. Jede Rasse hat eigene Stärken."/>
+  {cStep==="race"&&<><div style={{fontSize:13,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:4}}>RASSE</div>
+      <div style={{fontSize:9,color:T.txtD,marginBottom:6}}>BW=Bewegung, ST=Stärke, GE=Geschick, IN=Intelligenz, HP=Lebenspunkte</div>
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>{Object.entries(RACES).map(([k,r])=>(<div key={k} onClick={()=>setTRace(k)} style={{padding:8,borderRadius:10,cursor:"pointer",background:tRace===k?T.gold+"28":T.card,border:`1px solid ${tRace===k?T.gold:T.border}`}}>
       <div>{r.emoji} <span style={{fontSize:12,color:T.parch,fontFamily:"'Cinzel',serif"}}>{r.label}</span></div>
       <div style={{fontSize:9,color:T.txtD}}>{r.desc}</div>
       <div style={{fontSize:8,color:T.txtD,marginTop:2}}>BW:{r.bw} ST:{r.st} GE:{r.ge} IN:{r.in_} HP:{r.hp}</div></div>))}</div>
     <div style={{marginTop:10}}><Btn primary onClick={()=>{if(!tRace){setMsg("Wählen!");return;}setCStep("prof");}} disabled={!tRace}>Weiter</Btn></div></>}
-  {cStep==="prof"&&<><BackBtn onClick={()=>setCStep("race")} label="Rasse"/><div style={{fontSize:13,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:4}}>BERUF</div>
-      <Help text="NK=Nahkampfbonus, FK=Fernkampfbonus. Jeder Beruf hat 5 erlernbare Fertigkeiten."/>
+  {cStep==="prof"&&<><div style={{fontSize:13,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:4}}>BERUF</div>
+      <div style={{fontSize:9,color:T.txtD,marginBottom:6}}>NK=Nahkampfbonus, FK=Fernkampfbonus. 5 erlernbare Fertigkeiten pro Beruf.</div>
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>{Object.entries(PROFS).map(([k,p])=>(<div key={k} onClick={()=>setTProf(k)} style={{padding:8,borderRadius:10,cursor:"pointer",background:tProf===k?T.gold+"28":T.card,border:`1px solid ${tProf===k?T.gold:T.border}`}}>
       <div>{p.emoji} <span style={{fontSize:12,color:T.parch,fontFamily:"'Cinzel',serif"}}>{p.label}</span></div>
       <div style={{fontSize:9,color:T.txtD}}>{p.desc}</div>
