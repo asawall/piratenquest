@@ -165,9 +165,10 @@ function genEv(rType,fame){const d=Math.floor(fame/10);const pool=E[rType]||E.fl
 //  GAME HELPERS
 // ═══════════════════════════════════════════════════════════
 function roll4d6(){const d=[roll(6),roll(6),roll(6),roll(6)];d.sort((a,b)=>a-b);return{dice:d,total:d[1]+d[2]+d[3],dropped:d[0]};}
-function mkHero(name,rK,pK,bonus){const r=RACES[rK],p=PROFS[pK];const h={id:uid(),name,race:rK,profession:pK,bw:r.bw+(bonus?.bw||0),st:r.st+(bonus?.st||0),ge:r.ge+(bonus?.ge||0),in_:r.in_+(bonus?.in_||0),equipment:[],skills:[p.skills[0]],emoji:r[gender]||r.emoji||r.m||'🏴‍☠️'};h.maxHp=r.hp+h.st;h.hp=h.maxHp;return h;}
-function mkRecruit(name,rK,pK){return mkHero(name,rK,pK,{bw:roll(3),st:roll(3),ge:roll(3),in_:roll(3)});} // Recruits get random small bonus
+function mkHero(name,rK,pK){const r=RACES[rK],p=PROFS[pK];const h={id:uid(),name,race:rK,profession:pK,bw:r.bw,st:r.st,ge:r.ge,in_:r.in_,equipment:[],skills:[p.skills[0]],emoji:r.emoji};h.maxHp=r.hp+h.st;h.hp=h.maxHp;return h;}
+function mkRecruit(name,rK,pK){const h=mkHero(name,rK,pK);h.bw+=roll(2);h.st+=roll(2);h.ge+=roll(2);h.in_+=roll(2);h.maxHp=RACES[rK].hp+h.st;h.hp=h.maxHp;return h;}
 function hNK(h,curses){let v=h.st+(PROFS[h.profession]?.nk||0)+(h.equipment||[]).reduce((s,e)=>s+(e.nk||0),0);(curses||[]).forEach(c=>{if(c.stat==="st")v+=c.mod;});return Math.max(0,v);}
+function hFK(h,curses){let v=h.ge+(PROFS[h.profession]?.fk||0)+(h.equipment||[]).reduce((s,e)=>s+(e.fk||0),0);(curses||[]).forEach(c=>{if(c.stat==="ge")v+=c.mod;});return Math.max(0,v);}
 function hRW(h){return(h.equipment||[]).reduce((s,e)=>s+(e.rw||0),0);}
 function hMaxHeavy(h){return 1+(h.st>=4?1:0)+(h.st>=6?1:0);}
 function hCurHeavy(h){return(h.equipment||[]).reduce((s,e)=>s+(e.heavy||0),0);}
@@ -251,7 +252,7 @@ const joinGame=async()=>{if(!playerName.trim()||!joinCode.trim()){setMsg("Name &
 
 // Setup
 const startSetup=()=>{setSetupIdx(0);setHeroes([null,null,null,null]);setCStep("name");setTName("");setTGender(null);setTRace(null);setTProf(null);setDiceRolls([]);setStatA({bw:0,st:0,ge:0,in_:0});setStartGold(0);setPhase("setup");};
-const confirmHero=()=>{const h=mkHero(tName.trim(),tRace,tProf,statA);const nh=[...heroes];nh[setupIdx]=h;setHeroes(nh);
+const confirmHero=()=>{const h=mkHero(tName.trim(),tRace,tProf);const nh=[...heroes];nh[setupIdx]=h;setHeroes(nh);
   // After confirming: next hero or equip phase
   if(setupIdx<3){setSetupIdx(setupIdx+1);setCStep("name");setTName("");setTGender(null);setTRace(null);setTProf(null);setDiceRolls([]);}
   else{setCStep("gold");setSelHero(0);}};
@@ -339,13 +340,15 @@ const resolveSkillTest=async(passed)=>{
 const startCombat=(enemy,reward)=>{setCombat({enemy:{...enemy,curHp:enemy.hp},reward,round:1});setCLog([`Kampf gegen ${enemy.name}! (NK:${enemy.nk} HP:${enemy.hp} RW:${enemy.rw})`]);setPhase("combat");};
 const doCombatRound=()=>{
   const alive=me.heroes.filter(h=>h.hp>0);if(!alive.length)return;
-  // UltraQuest-style: ONE W6 per side + total NK
-  const groupNK=alive.reduce((s,h)=>s+hNK(h,myCurses),0);
-  const shipBonus=isSea?myShip.kan:0;
-  const pRoll=d6();const pTotal=pRoll+groupNK+shipBonus;
+  const isFK=combat.round===1; // Round 1 = Fernkampf, 2+ = Nahkampf
+  const phase=isFK?"FERNKAMPF":"NAHKAMPF";
+  // FK: GE + ranged weapons. NK: ST + melee weapons.
+  const groupVal=alive.reduce((s,h)=>s+(isFK?hFK(h,myCurses):hNK(h,myCurses)),0);
+  const shipBonus=isSea?(isFK?myShip.kan:0):0; // Kanonen nur im FK
+  const pRoll=d6();const pTotal=pRoll+groupVal+shipBonus;
   const eRoll=d6();const eTotal=eRoll+combat.enemy.nk;
-  const logs=[...cLog];logs.push(`── Runde ${combat.round} ──`);
-  logs.push(`  Crew: W6(${pRoll}) + ${groupNK}NK${shipBonus?` + ${shipBonus}Kan`:""} = ${pTotal}`);
+  const logs=[...cLog];logs.push(`── Runde ${combat.round} (${phase}) ──`);
+  logs.push(`  Crew: W6(${pRoll}) + ${groupVal}${isFK?"FK":"NK"}${shipBonus?` + ${shipBonus}Kan`:""} = ${pTotal}`);
   logs.push(`  ${combat.enemy.name}: W6(${eRoll}) + ${combat.enemy.nk}NK = ${eTotal}`);
   const ne={...combat.enemy};
   if(pTotal>eTotal){
@@ -434,7 +437,7 @@ const HeroCards=()=>(<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",g
       <span style={{fontSize:14}}>{h.emoji}</span><span style={{fontSize:10,fontWeight:700,color:T.parch,fontFamily:"'Cinzel',serif",flex:1}}>{h.name}</span></div>
     <Badge>{PROFS[h.profession]?.label}</Badge>{h.hp<=0&&<Badge color={T.red}>K.O.</Badge>}
     <div style={{display:"flex",marginTop:4,gap:1}}>
-      <SB label="HP" value={`${h.hp}/${h.maxHp}`} color={h.hp<=2?T.red:T.green}/><SB label="NK" value={hNK(h,myCurses)}/><SB label="RW" value={hRW(h)}/></div>
+      <SB label="HP" value={`${h.hp}/${h.maxHp}`} color={h.hp<=2?T.red:T.green}/><SB label="NK" value={hNK(h,myCurses)}/><SB label="FK" value={hFK(h,myCurses)}/><SB label="RW" value={hRW(h)}/></div>
     <div style={{display:"flex",marginTop:2,gap:1}}><SB label="ST" value={h.st}/><SB label="GE" value={h.ge}/><SB label="IN" value={h.in_}/><SB label="BW" value={h.bw}/></div>
     {(h.equipment||[]).length>0&&<div style={{marginTop:2,fontSize:9,color:T.txtD}}>{h.equipment.map(e=>e.emoji).join("")} {h.equipment.map(e=>e.name).join(", ")}</div>}
   </Card>))}</div>);
@@ -520,21 +523,7 @@ const SetupScreen=()=>(<div style={{minHeight:"100vh",padding:20}}>
       <div>{p.emoji} <span style={{fontSize:12,color:T.parch,fontFamily:"'Cinzel',serif"}}>{p.label}</span></div>
       <div style={{fontSize:9,color:T.txtD}}>{p.desc}</div>
       <div style={{fontSize:8,color:T.gold+"88"}}>NK+{p.nk} FK+{p.fk}</div></div>))}</div>
-    <div style={{marginTop:10}}><Btn primary onClick={()=>{if(!tProf){setMsg("!");return;}setCStep("roll");}} disabled={!tProf}>Würfeln!</Btn></div></>}
-  {cStep==="roll"&&<Card>
-    <div style={{fontSize:14,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:6}}>STATS WÜRFELN</div>
-    <div style={{fontSize:10,color:T.txtD,marginBottom:10}}>4W6, niedrigster weg = Bonus</div>
-    {diceRolls.length===0?<Btn primary onClick={()=>{setDiceRolls([roll4d6(),roll4d6(),roll4d6(),roll4d6()]);const r=[roll4d6(),roll4d6(),roll4d6(),roll4d6()];setDiceRolls(r);setStatA({bw:r[0].total,st:r[1].total,ge:r[2].total,in_:r[3].total});}}>WÜRFELN!</Btn>
-    :<div>
-      {["BW","ST","GE","IN"].map((l,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
-        <div style={{width:24,fontSize:11,color:T.gold,fontWeight:700}}>{l}</div>
-        <div style={{display:"flex",gap:3}}>{diceRolls[i].dice.map((v,j)=>(<DF key={j} val={v} dropped={j===0}/>))}</div>
-        <div style={{fontSize:15,fontWeight:900,color:T.goldL}}>+{diceRolls[i].total}</div></div>))}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4,marginBottom:8}}>
-        {[["bw","st"],["ge","in_"],["bw","ge"],["st","in_"],["bw","in_"],["st","ge"]].map(([a,b])=>(<Btn key={a+b} small onClick={()=>{const n={...statA};const t=n[a];n[a]=n[b];n[b]=t;setStatA(n);}}>{a.toUpperCase()}↔{b.toUpperCase()}</Btn>))}</div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-        <Btn onClick={()=>setDiceRolls([])}>Neu</Btn><Btn primary onClick={confirmHero}>OK</Btn></div>
-    </div>}</Card>}
+    <div style={{marginTop:10}}><Btn primary onClick={()=>{if(!tProf){setMsg("!");return;}confirmHero();}} disabled={!tProf}>Bestätigen</Btn></div></>}
   {cStep==="gold"&&<div>
     <div style={{fontSize:14,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:6}}>CREW AUSRUESTEN</div>
     {startGold===0?<Card style={{textAlign:"center"}}><div style={{fontSize:11,color:T.txtD,marginBottom:8}}>Alle 4 Helden erstellt! Jetzt Startgold würfeln (3W6 x 3).</div>
@@ -615,7 +604,7 @@ const PlayScreen=()=>{const other=game?.players?.find(p=>p.id!==playerId);
       <Btn onClick={rest} disabled={!aliveHeroes.length}>{curReg?.tavern?"Taverne(+5HP)":"Rasten(+3HP)"}</Btn>
       {curReg?.shop&&<Btn onClick={()=>setPhase("shop")}>Laden</Btn>}
       {curReg?.port&&<Btn onClick={()=>{setRName("");setRRace(null);setRProf(null);setPhase("recruit");}}>Hafen{deadHeroes.length>0?` (${deadHeroes.length} K.O.)`:""}</Btn>}
-      <Btn onClick={()=>setPhase("levelup")}>Aufwerten</Btn>
+      {curReg?.port&&<Btn onClick={()=>setPhase("levelup")}>Aufwerten</Btn>}
     </div>}
     {game?.log?.length>0&&<Card style={{marginTop:8}}><div style={{maxHeight:50,overflow:"auto"}}>{game.log.slice(-4).reverse().map((l,i)=><div key={i} style={{fontSize:9,color:T.txtD}}>{l}</div>)}</div></Card>}
   </div>;};
