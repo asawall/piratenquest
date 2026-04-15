@@ -634,7 +634,7 @@ export default function App(){
       {myPerks.length>0&&<div style={{fontSize:9,color:T.gold+"88",marginBottom:4}}>{myPerks[myPerks.length-1].label} — {myPerks[myPerks.length-1].desc}</div>}
       {other&&<div style={{fontSize:10,color:T.txtD,marginBottom:6}}>{other.name}: ⭐{other.fame} 💰{other.gold} · {REGIONS.find(r=>r.id===other.position)?.name}</div>}
       <div style={{fontSize:13,color:T.parch,fontFamily:"'Cinzel',serif",marginBottom:6}}>📍 {curReg?.name} {REMO[curReg?.type]}</div>
-      <MapView/><HeroCards/>
+      {MapView()}{HeroCards()}
       {isMyTurn&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
         <Btn primary onClick={explore}>🎲 Erkunden</Btn>
         <Btn onClick={rest}>🍺 Rasten</Btn>
@@ -666,7 +666,7 @@ export default function App(){
         <div style={{fontSize:24,marginBottom:2}}>👹</div>
         <div style={{fontSize:16,color:T.red,fontFamily:"'Cinzel',serif"}}>{combat?.enemy?.name}</div>
         <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:6}}><Stat label="HP" value={`${Math.max(0,combat?.enemy?.curHp)}/${combat?.enemy?.hp}`} color={T.red}/><Stat label="NK" value={combat?.enemy?.nk}/><Stat label="RW" value={combat?.enemy?.rw}/></div></Card>
-      <HeroCards/>
+      {HeroCards()}
       <Card style={{maxHeight:100,overflow:"auto",background:T.bg}}>{cLog.map((l,i)=><div key={i} style={{fontSize:11,color:l.startsWith("✅")?T.green:l.startsWith("❌")?T.red:T.parch,padding:"1px 0"}}>{l}</div>)}</Card>
       {eDead?<div style={{marginTop:10}}><div style={{textAlign:"center",color:T.green,fontSize:15,fontFamily:"'Cinzel',serif",marginBottom:8}}>
         🎉 SIEG! {combat.reward&&`+${combat.reward.ruhm||0}🏆 +${combat.reward.fame||0}⭐ +${combat.reward.gold||0}💰`}</div>
@@ -729,8 +729,15 @@ export default function App(){
 
   return(<div style={{background:T.bg,minHeight:"100vh",color:T.txt,fontFamily:"'Crimson Text',serif",maxWidth:600,margin:"0 auto"}}>
     <style>{fonts}{`*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}button:active{transform:scale(0.97);}`}</style>
-    <Toast/>
-    {phase==="menu"&&<Menu/>}{phase==="lobby"&&<Lobby/>}{phase==="setup"&&<Setup/>}{phase==="playing"&&<Play/>}
-    {phase==="event"&&<Event/>}{phase==="combat"&&<Combat/>}{phase==="shop"&&<Shop/>}{phase==="levelup"&&<LevelUp/>}{phase==="finished"&&<Finished/>}
+    {Toast()}
+    {phase==="menu"&&Menu()}
+    {phase==="lobby"&&Lobby()}
+    {phase==="setup"&&Setup()}
+    {phase==="playing"&&Play()}
+    {phase==="event"&&Event()}
+    {phase==="combat"&&Combat()}
+    {phase==="shop"&&Shop()}
+    {phase==="levelup"&&LevelUp()}
+    {phase==="finished"&&Finished()}
   </div>);
 }
