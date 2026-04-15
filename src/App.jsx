@@ -49,37 +49,44 @@ const SHIPS=[
 ];
 // Items: tier gates by fame. heavy=max 1+1perST4+1perST6
 const ITEMS=[
-  {id:"dolch",cat:"W",name:"Dolch",nk:1,fk:1,rw:0,cost:3,emoji:"🔪",tier:0,heavy:0},
-  {id:"saebel",cat:"W",name:"Entermesser",nk:2,fk:0,rw:0,cost:6,emoji:"🗡️",tier:0,heavy:0},
-  {id:"pistole",cat:"W",name:"Pistole",nk:0,fk:2,rw:0,cost:8,emoji:"🔫",tier:0,heavy:0},
-  {id:"enterhaken",cat:"W",name:"Enterhaken",nk:2,fk:0,rw:0,cost:5,emoji:"🪝",tier:0,heavy:0},
-  {id:"rapier",cat:"W",name:"Rapier",nk:3,fk:0,rw:0,cost:14,emoji:"⚔️",tier:1,heavy:0},
-  {id:"axt",cat:"W",name:"Enteraxt",nk:4,fk:0,rw:0,cost:20,emoji:"🪓",tier:1,heavy:1},
-  {id:"muskete",cat:"W",name:"Muskete",nk:0,fk:3,rw:0,cost:16,emoji:"🔫",tier:1,heavy:1},
-  {id:"dreizack",cat:"W",name:"Dreizack",nk:3,fk:1,rw:0,cost:18,emoji:"🔱",tier:1,heavy:1},
-  {id:"flamberg",cat:"W",name:"Flamberge",nk:5,fk:0,rw:0,cost:35,emoji:"⚔️",tier:2,heavy:1},
-  {id:"doppellauf",cat:"W",name:"Doppellauf",nk:0,fk:4,rw:0,cost:30,emoji:"🔫",tier:2,heavy:0},
-  {id:"neptunklinge",cat:"W",name:"Neptunklinge",nk:6,fk:0,rw:0,cost:60,emoji:"🔱",tier:3,heavy:1},
-  {id:"donnerbuechse",cat:"W",name:"Donnerbuechse",nk:0,fk:5,rw:0,cost:55,emoji:"💥",tier:3,heavy:1},
-  {id:"lederwams",cat:"R",name:"Lederwams",nk:0,fk:0,rw:1,cost:6,emoji:"🧥",tier:0,heavy:0},
-  {id:"buckler",cat:"R",name:"Buckler",nk:0,fk:0,rw:1,cost:7,emoji:"🛡️",tier:0,heavy:0},
-  {id:"kette",cat:"R",name:"Kettenhemd",nk:0,fk:0,rw:2,cost:15,emoji:"🛡️",tier:1,heavy:1},
-  {id:"brust",cat:"R",name:"Brustpanzer",nk:0,fk:0,rw:3,cost:28,emoji:"🛡️",tier:2,heavy:1},
-  {id:"drachenschuppe",cat:"R",name:"Drachenschuppe",nk:0,fk:0,rw:4,cost:50,emoji:"🐉",tier:3,heavy:1},
-  {id:"amulett",cat:"R",name:"Schutzamulett",nk:0,fk:0,rw:1,cost:25,emoji:"🧿",tier:2,heavy:0},
-  {id:"rum",cat:"K",name:"Fass Rum",cost:4,emoji:"🍺",tier:0,rum:5,heavy:0},
-  {id:"proviant",cat:"K",name:"Proviant",cost:3,emoji:"🍖",tier:0,heal:3,heavy:0},
-  {id:"heiltrank",cat:"K",name:"Kräutertinktur",cost:10,emoji:"🧪",tier:1,heal:5,heavy:0},
-  {id:"elixier",cat:"K",name:"Voodoo-Elixier",cost:25,emoji:"🧪",tier:2,heal:10,heavy:0},
-  {id:"kugeln",cat:"K",name:"Kanonenkugeln",cost:5,emoji:"💣",tier:0,ammo:10,heavy:0},
-  {id:"dynamit",cat:"K",name:"Dynamit",cost:12,emoji:"🧨",tier:1,heavy:0},
-  {id:"fernrohr",cat:"T",name:"Fernrohr",cost:10,emoji:"🔭",tier:0,heavy:0},
-  {id:"kompass",cat:"T",name:"Mag. Kompaß",cost:22,emoji:"🧭",tier:1,heavy:0},
-  {id:"seil",cat:"T",name:"Seil",cost:4,emoji:"🪢",tier:0,heavy:0},
-  {id:"fackel",cat:"T",name:"Laterne",cost:3,emoji:"🏮",tier:0,heavy:0},
-  {id:"voodoo",cat:"M",name:"Voodoo-Puppe",cost:18,emoji:"🪆",tier:1,heavy:0},
-  {id:"seekarte",cat:"M",name:"Myst. Seekarte",cost:30,emoji:"🗺️",tier:2,heavy:0},
-  {id:"geisterflasche",cat:"M",name:"Geisterflasche",cost:40,emoji:"🫧",tier:3,heavy:0},
+  // MELEE 1-HAND (max 2 per hero, or 1 if using 2h)
+  {id:"dolch",slot:"m1",name:"Dolch",nk:1,fk:1,rw:0,cost:3,emoji:"🔪",tier:0,heavy:0},
+  {id:"saebel",slot:"m1",name:"Entermesser",nk:2,fk:0,rw:0,cost:6,emoji:"🗡️",tier:0,heavy:0},
+  {id:"enterhaken",slot:"m1",name:"Enterhaken",nk:2,fk:0,rw:0,cost:5,emoji:"🪝",tier:0,heavy:0},
+  {id:"rapier",slot:"m1",name:"Rapier",nk:3,fk:0,rw:0,cost:14,emoji:"⚔️",tier:1,heavy:0},
+  // MELEE 2-HAND (max 1, no shield possible)
+  {id:"axt",slot:"m2",name:"Enteraxt",nk:4,fk:0,rw:0,cost:20,emoji:"🪓",tier:1,heavy:1},
+  {id:"dreizack",slot:"m2",name:"Dreizack",nk:3,fk:0,rw:0,cost:18,emoji:"🔱",tier:1,heavy:1},
+  {id:"flamberg",slot:"m2",name:"Flamberge",nk:5,fk:0,rw:0,cost:35,emoji:"⚔️",tier:2,heavy:1},
+  {id:"neptunklinge",slot:"m2",name:"Neptunklinge",nk:6,fk:0,rw:0,cost:60,emoji:"🔱",tier:3,heavy:1},
+  // RANGED (max 1 per hero)
+  {id:"pistole",slot:"r",name:"Pistole",nk:0,fk:2,rw:0,cost:8,emoji:"🔫",tier:0,heavy:0},
+  {id:"muskete",slot:"r",name:"Muskete",nk:0,fk:3,rw:0,cost:16,emoji:"🔫",tier:1,heavy:1},
+  {id:"doppellauf",slot:"r",name:"Doppellauf",nk:0,fk:4,rw:0,cost:30,emoji:"🔫",tier:2,heavy:0},
+  {id:"donnerbuechse",slot:"r",name:"Donnerbüchse",nk:0,fk:5,rw:0,cost:55,emoji:"💥",tier:3,heavy:1},
+  // ARMOR (max 1)
+  {id:"lederwams",slot:"a",name:"Lederwams",nk:0,fk:0,rw:1,cost:6,emoji:"🧥",tier:0,heavy:0},
+  {id:"kette",slot:"a",name:"Kettenhemd",nk:0,fk:0,rw:2,cost:15,emoji:"🛡️",tier:1,heavy:1},
+  {id:"brust",slot:"a",name:"Brustpanzer",nk:0,fk:0,rw:3,cost:28,emoji:"🛡️",tier:2,heavy:1},
+  {id:"drachenschuppe",slot:"a",name:"Drachenschuppe",nk:0,fk:0,rw:4,cost:50,emoji:"🐉",tier:3,heavy:1},
+  // SHIELD (max 1, not with 2h weapon)
+  {id:"buckler",slot:"s",name:"Buckler",nk:0,fk:0,rw:1,cost:7,emoji:"🛡️",tier:0,heavy:0},
+  {id:"amulett",slot:"s",name:"Schutzamulett",nk:0,fk:0,rw:1,cost:25,emoji:"🧿",tier:2,heavy:0},
+  // CONSUMABLES
+  {id:"rum",slot:"k",name:"Fass Rum",nk:0,fk:0,rw:0,cost:4,emoji:"🍺",tier:0,heavy:0,rum:5},
+  {id:"proviant",slot:"k",name:"Proviant",nk:0,fk:0,rw:0,cost:3,emoji:"🍖",tier:0,heavy:0,heal:3},
+  {id:"heiltrank",slot:"k",name:"Kräutertinktur",nk:0,fk:0,rw:0,cost:10,emoji:"🧪",tier:1,heavy:0,heal:5},
+  {id:"elixier",slot:"k",name:"Voodoo-Elixier",nk:0,fk:0,rw:0,cost:25,emoji:"🧪",tier:2,heavy:0,heal:10},
+  {id:"kugeln",slot:"k",name:"Kanonenkugeln",nk:0,fk:0,rw:0,cost:5,emoji:"💣",tier:0,heavy:0,ammo:10},
+  {id:"dynamit",slot:"k",name:"Dynamit",nk:0,fk:0,rw:0,cost:12,emoji:"🧨",tier:1,heavy:0},
+  // TOOLS & MAGIC
+  {id:"fernrohr",slot:"t",name:"Fernrohr",nk:0,fk:0,rw:0,cost:10,emoji:"🔭",tier:0,heavy:0},
+  {id:"kompass",slot:"t",name:"Mag. Kompass",nk:0,fk:0,rw:0,cost:22,emoji:"🧭",tier:1,heavy:0},
+  {id:"seil",slot:"t",name:"Seil",nk:0,fk:0,rw:0,cost:4,emoji:"🪢",tier:0,heavy:0},
+  {id:"fackel",slot:"t",name:"Laterne",nk:0,fk:0,rw:0,cost:3,emoji:"🏮",tier:0,heavy:0},
+  {id:"voodoo",slot:"x",name:"Voodoo-Puppe",nk:0,fk:0,rw:0,cost:18,emoji:"🪆",tier:1,heavy:0},
+  {id:"seekarte",slot:"x",name:"Myst. Seekarte",nk:0,fk:0,rw:0,cost:30,emoji:"🗺️",tier:2,heavy:0},
+  {id:"geisterflasche",slot:"x",name:"Geisterflasche",nk:0,fk:0,rw:0,cost:40,emoji:"🫧",tier:3,heavy:0},
 ];
 const TIER_FAME={0:0,1:10,2:25,3:40};
 const SHOP_INV={
@@ -167,8 +174,36 @@ function genEv(rType,fame){const d=Math.floor(fame/10);const pool=E[rType]||E.fl
 function roll4d6(){const d=[roll(6),roll(6),roll(6),roll(6)];d.sort((a,b)=>a-b);return{dice:d,total:d[1]+d[2]+d[3],dropped:d[0]};}
 function mkHero(name,rK,pK){const r=RACES[rK],p=PROFS[pK];const h={id:uid(),name,race:rK,profession:pK,bw:r.bw,st:r.st,ge:r.ge,in_:r.in_,equipment:[],skills:[p.skills[0]],emoji:r.emoji};h.maxHp=r.hp+h.st;h.hp=h.maxHp;return h;}
 function mkRecruit(name,rK,pK){const h=mkHero(name,rK,pK);h.bw+=roll(2);h.st+=roll(2);h.ge+=roll(2);h.in_+=roll(2);h.maxHp=RACES[rK].hp+h.st;h.hp=h.maxHp;return h;}
-function hNK(h,curses){let v=h.st+(PROFS[h.profession]?.nk||0)+(h.equipment||[]).reduce((s,e)=>s+(e.nk||0),0);(curses||[]).forEach(c=>{if(c.stat==="st")v+=c.mod;});return Math.max(0,v);}
-function hFK(h,curses){let v=h.ge+(PROFS[h.profession]?.fk||0)+(h.equipment||[]).reduce((s,e)=>s+(e.fk||0),0);(curses||[]).forEach(c=>{if(c.stat==="ge")v+=c.mod;});return Math.max(0,v);}
+function hNK(h,curses){
+  const melee=(h.equipment||[]).filter(e=>e.slot==="m1"||e.slot==="m2");
+  const bestNK=melee.length?Math.max(...melee.map(e=>e.nk||0)):0;
+  let v=h.st+(PROFS[h.profession]?.nk||0)+bestNK;
+  (curses||[]).forEach(c=>{if(c.stat==="st")v+=c.mod;});return Math.max(0,v);}
+function hFK(h,curses){
+  const ranged=(h.equipment||[]).filter(e=>e.slot==="r");
+  const bestFK=ranged.length?Math.max(...ranged.map(e=>e.fk||0)):0;
+  let v=h.ge+(PROFS[h.profession]?.fk||0)+bestFK;
+  (curses||[]).forEach(c=>{if(c.stat==="ge")v+=c.mod;});return Math.max(0,v);}
+function canEquip(hero,item){
+  const eq=hero.equipment||[];
+  const has=s=>eq.filter(e=>e.slot===s);
+  if(item.slot==="m1"){// 1h melee: max 2, but 0 if using 2h
+    if(has("m2").length>0)return"Hat Zweihandwaffe";
+    if(has("m1").length>=2)return"Max 2 Einhandwaffen";
+  }
+  if(item.slot==="m2"){// 2h melee: max 1, no 1h weapons, no shield
+    if(has("m1").length>0)return"Hat Einhandwaffen";
+    if(has("m2").length>=1)return"Schon Zweihandwaffe";
+  }
+  if(item.slot==="r"){if(has("r").length>=1)return"Schon Fernkampfwaffe";}
+  if(item.slot==="a"){if(has("a").length>=1)return"Schon Rüstung";}
+  if(item.slot==="s"){
+    if(has("s").length>=1)return"Schon Schild";
+    if(has("m2").length>0)return"Kein Schild mit Zweihand";
+  }
+  if(item.heavy&&hCurHeavy(hero)>=hMaxHeavy(hero))return"Zu schwer";
+  return null; // OK
+}
 function hRW(h){return(h.equipment||[]).reduce((s,e)=>s+(e.rw||0),0);}
 function hMaxHeavy(h){return 1+(h.st>=4?1:0)+(h.st>=6?1:0);}
 function hCurHeavy(h){return(h.equipment||[]).reduce((s,e)=>s+(e.heavy||0),0);}
@@ -218,6 +253,7 @@ const[startGold,setStartGold]=useState(0);
 const[sessions,setSessions]=useState(getSessions());
 // Recruit state
 const[rName,setRName]=useState("");const[rRace,setRRace]=useState(null);const[rProf,setRProf]=useState(null);
+const[shopHero,setShopHero]=useState(0);
 const[showHelp,setShowHelp]=useState(false);const[showOpp,setShowOpp]=useState(false);
 const pollRef=useRef(null);
 
@@ -239,7 +275,7 @@ const Toast=()=>msg?(<div onClick={()=>setMsg("")} style={{position:"fixed",top:
 const saveSessionInfo=(g)=>{if(!g)return;const other=g.players.find(p=>p.id!==playerId);
   saveSession({gameId:g.id,playerId,playerName:me?.name||playerName,opponentName:other?.name||"Solo",lastPlayed:new Date().toISOString(),position:me?.position||"tortuga",fame:me?.fame||0});setSessions(getSessions());};
 const resumeGame=async(s)=>{const g=await api.load(s.gameId);if(!g){setMsg("Spiel nicht gefunden!");removeSession(s.gameId);setSessions(getSessions());return;}
-  setGameId(s.gameId);setPlayerId(s.playerId);setPlayerName(s.playerName);setGame(g);setPhase(g.phase==="finished"?"finished":"playing");};
+  setGameId(s.gameId);setPlayerId(s.playerId);setPlayerName(s.playerName);setGame(g);const myP=g.players.find(p=>p.id===s.playerId);setPhase(g.phase==="finished"?"finished":myP?.ready?"playing":"lobby");};
 const deleteSession=(gid)=>{removeSession(gid);setSessions(getSessions());};
 
 // ── GAME ACTIONS ──
@@ -258,8 +294,9 @@ const confirmHero=()=>{const h=mkHero(tName.trim(),tRace,tProf);const nh=[...her
   else{setCStep("gold");setSelHero(0);}};
 const buyStartItem=(item)=>{if(startGold<item.cost)return;
   const h=heroes[selHero];
-  if(h&&(item.nk||item.fk||item.rw)){if(item.heavy&&hCurHeavy(h)>=hMaxHeavy(h)){setMsg("Zu schwer!");return;}
-    h.equipment=[...(h.equipment||[]),{id:item.id,name:item.name,nk:item.nk||0,fk:item.fk||0,rw:item.rw||0,emoji:item.emoji,heavy:item.heavy||0}];
+  if(h&&(item.nk||item.fk||item.rw)){
+    const err=canEquip(h,item);if(err){setMsg(err);return;}
+    h.equipment=[...(h.equipment||[]),{id:item.id,slot:item.slot,name:item.name,nk:item.nk||0,fk:item.fk||0,rw:item.rw||0,emoji:item.emoji,heavy:item.heavy||0}];
     setStartGold(startGold-item.cost);setMsg(`${h.name}: ${item.name}!`);setHeroes([...heroes]);}
   else if(item.heal||item.rum){setStartGold(startGold-item.cost);setMsg("Gekauft!");}
   else{setStartGold(startGold-item.cost);setMsg("Gekauft!");}};
@@ -387,14 +424,23 @@ const rest=async()=>{if(!isMyTurn||!aliveHeroes.length)return;const g={...game};
   await endTurn(g);};
 
 // Shop
-const buyItem=async item=>{const pr=Math.round(item.cost*(SHOP_INV[curReg?.shop]?.pm||1));if(me.gold<pr){setMsg("Kein Gold!");return;}
+const buyItem=async(item,heroIdx)=>{const pr=Math.round(item.cost*(SHOP_INV[curReg?.shop]?.pm||1));if(me.gold<pr){setMsg("Kein Gold!");return;}
   const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);g.players[pi].gold-=pr;
-  if(item.rum){g.players[pi].rum=(g.players[pi].rum||0)+item.rum;}
-  else if(item.heal){g.players[pi].heroes.forEach(h=>{if(h.hp>0)h.hp=Math.min(h.maxHp,h.hp+item.heal);});}
-  else if(item.ammo){/* consumed */}
-  else{const h=g.players[pi].heroes.find(h=>h.hp>0&&!(h.equipment||[]).find(e=>e.id===item.id)&&(!item.heavy||hCurHeavy(h)<hMaxHeavy(h)));
-    if(h){h.equipment=[...(h.equipment||[]),{id:item.id,name:item.name,nk:item.nk||0,fk:item.fk||0,rw:item.rw||0,emoji:item.emoji,heavy:item.heavy||0}];setMsg(`${h.name}: ${item.name}!`);}
-    else{setMsg("Niemand kann das tragen!");g.players[pi].gold+=pr;}}
+  if(item.rum){g.players[pi].rum=(g.players[pi].rum||0)+item.rum;setMsg(`+${item.rum}🍺`);}
+  else if(item.heal){g.players[pi].heroes.forEach(h=>{if(h.hp>0)h.hp=Math.min(h.maxHp,h.hp+item.heal);});setMsg("Crew geheilt!");}
+  else if(item.ammo){setMsg(`+${item.ammo}💣`);}
+  else{const h=g.players[pi].heroes[heroIdx!=null?heroIdx:0];
+    if(!h||h.hp<=0){setMsg("Held nicht verfügbar!");g.players[pi].gold+=pr;return;}
+    const err=canEquip(h,item);if(err){setMsg(err);g.players[pi].gold+=pr;return;}
+    h.equipment=[...(h.equipment||[]),{id:item.id,slot:item.slot,name:item.name,nk:item.nk||0,fk:item.fk||0,rw:item.rw||0,emoji:item.emoji,heavy:item.heavy||0}];
+    setMsg(`${h.name}: ${item.name}!`);}
+  await api.save(g);setGame(g);};
+const sellItem=async(heroIdx,eqIdx)=>{const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
+  const h=g.players[pi].heroes[heroIdx];if(!h)return;
+  const item=h.equipment[eqIdx];if(!item)return;
+  const refund=Math.floor((ITEMS.find(i=>i.id===item.id)?.cost||0)/2);
+  h.equipment=h.equipment.filter((_,i)=>i!==eqIdx);
+  g.players[pi].gold+=refund;setMsg(`${item.name} verkauft: +${refund}💰`);
   await api.save(g);setGame(g);};
 const buyShip=async ship=>{if(me.gold<ship.cost)return;const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
   g.players[pi].gold-=ship.cost;g.players[pi].ship=ship.id;setMsg(ship.name+"!");await api.save(g);setGame(g);};
@@ -650,21 +696,37 @@ const CombatScreen=()=>{const alive=aliveHeroes.length;const eDead=combat?.enemy
   </div>;};
 
 const ShopScreen=()=>{const sd=SHOP_INV[curReg?.shop]||SHOP_INV.hafen;const fame=me?.fame||0;
+  const sh=me?.heroes?.[shopHero]; // selected hero for buying
   return <div style={{minHeight:"100vh",padding:20}}>
-    <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}>
+    <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
       <div style={{fontSize:15,color:T.gold,fontFamily:"'Cinzel',serif"}}>{sd.emoji} {sd.name}</div><Badge color="#FFC107">💰{me?.gold||0}</Badge></div>
+    {/* HERO SELECTOR */}
+    <div style={{fontSize:11,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:4}}>KAUFEN FÜR:</div>
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4,marginBottom:10}}>
+      {me?.heroes?.map((h,i)=>(<div key={h.id} onClick={()=>setShopHero(i)}
+        style={{padding:6,borderRadius:8,background:shopHero===i?T.gold+"22":T.card,border:`2px solid ${shopHero===i?T.gold:T.border}`,cursor:"pointer",opacity:h.hp<=0?0.3:1}}>
+        <div style={{fontSize:11,color:shopHero===i?T.goldL:T.parch,fontWeight:700}}>{h.emoji} {h.name}</div>
+        <div style={{fontSize:8,color:T.txtD}}>NK:{hNK(h,myCurses)} FK:{hFK(h,myCurses)} RW:{hRW(h)}</div>
+        {(h.equipment||[]).length>0&&<div style={{fontSize:8,color:T.gold}}>
+          {h.equipment.map((e,ei)=>(<span key={ei} onClick={(ev)=>{ev.stopPropagation();sellItem(i,ei);}} style={{cursor:"pointer",marginRight:3}} title="Verkaufen">{e.emoji}{e.name} ✕</span>))}
+        </div>}
+        {(h.equipment||[]).length===0&&<div style={{fontSize:8,color:T.red}}>Keine Ausrüstung</div>}
+      </div>))}
+    </div>
+    <div style={{fontSize:9,color:T.txtD,marginBottom:8}}>Tippe ✕ neben Item zum Verkaufen (halber Preis)</div>
     {sd.ships&&<><div style={{fontSize:12,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:6}}>SCHIFFE</div>
       <div style={{display:"grid",gap:5,marginBottom:10}}>{SHIPS.filter(s=>s.cost>0).map(s=>(<Card key={s.id} style={{display:"flex",alignItems:"center",gap:8,padding:8,opacity:me?.ship===s.id?0.4:1}}>
         <div style={{fontSize:18}}>{s.emoji}</div><div style={{flex:1}}><div style={{fontSize:12,color:T.parch,fontFamily:"'Cinzel',serif"}}>{s.name}</div>
           <div style={{fontSize:9,color:T.txtD}}>🔫{s.kan} 🛡️{s.rumpf} ⚡{s.spd}</div></div>
         <Btn small primary onClick={()=>buyShip(s)} disabled={me?.gold<s.cost||me?.ship===s.id} style={{width:"auto",minWidth:55}}>{me?.ship===s.id?"✓":s.cost+"G"}</Btn></Card>))}</div></>}
-    <div style={{fontSize:12,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:6}}>WAREN</div>
+    <div style={{fontSize:12,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:6}}>WAREN {sh?`für ${sh.name}`:""}</div>
     <div style={{display:"grid",gap:4}}>{ITEMS.filter(i=>sd.ids.includes(i.id)).map(it=>{const pr=Math.round(it.cost*sd.pm);const locked=fame<TIER_FAME[it.tier];
-      return(<Card key={it.id} style={{display:"flex",alignItems:"center",gap:8,padding:8,opacity:locked?0.3:1}}>
+      const slotErr=sh?canEquip(sh,it):null;const cantBuy=locked||me?.gold<pr||!!slotErr;
+      return(<Card key={it.id} style={{display:"flex",alignItems:"center",gap:8,padding:8,opacity:locked?0.3:cantBuy?0.5:1}}>
         <div style={{fontSize:15}}>{it.emoji}</div>
-        <div style={{flex:1}}><div style={{fontSize:11,color:T.parch}}>{it.name}{locked?` 🔒${TIER_FAME[it.tier]}⭐`:""}</div>
-          <div style={{fontSize:8,color:T.txtD}}>{it.nk>0&&`NK+${it.nk} `}{it.fk>0&&`FK+${it.fk} `}{it.rw>0&&`RW+${it.rw} `}{it.heal&&`Heal+${it.heal} `}{it.rum&&`+${it.rum}🍺 `}{it.heavy?`[schwer] `:""}</div></div>
-        <Btn small primary onClick={()=>buyItem(it)} disabled={me?.gold<pr||locked} style={{width:"auto",minWidth:50}}>{pr}G</Btn></Card>);})}</div>
+        <div style={{flex:1}}><div style={{fontSize:11,color:T.parch}}>{it.name}{locked?` 🔒${TIER_FAME[it.tier]}⭐`:""}{slotErr?` (${slotErr})`:""}</div>
+          <div style={{fontSize:8,color:T.txtD}}>{it.slot==="m1"?"1H-Nahkampf ":it.slot==="m2"?"2H-Nahkampf ":it.slot==="r"?"Fernkampf ":it.slot==="a"?"Rüstung ":it.slot==="s"?"Schild ":""}{it.nk>0&&`NK+${it.nk} `}{it.fk>0&&`FK+${it.fk} `}{it.rw>0&&`RW+${it.rw} `}{it.heal&&`Heal+${it.heal} `}{it.rum&&`+${it.rum}🍺 `}{it.heavy?"[schwer]":""}</div></div>
+        <Btn small primary onClick={()=>buyItem(it,shopHero)} disabled={cantBuy} style={{width:"auto",minWidth:50}}>{pr}G</Btn></Card>);})}</div>
     <div style={{marginTop:10}}><Btn onClick={()=>setPhase("playing")}>Zurück</Btn></div></div>;};
 
 // ── RECRUIT / HEAL screen ──
