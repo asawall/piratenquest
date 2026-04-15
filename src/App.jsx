@@ -507,24 +507,54 @@ const SetupScreen=()=>(<div style={{minHeight:"100vh",padding:20}}>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
         <Btn onClick={()=>setDiceRolls([])}>Neu</Btn><Btn primary onClick={confirmHero}>OK</Btn></div>
     </div>}</Card>}
-  {cStep==="gold"&&<Card>
-    <div style={{fontSize:14,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:6}}>STARTGOLD</div>
-    {startGold===0?<Btn primary onClick={()=>setStartGold((d6()+d6()+d6())*3)}>Gold würfeln!</Btn>
+  {cStep==="gold"&&<div>
+    <div style={{fontSize:14,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:6}}>CREW AUSRUESTEN</div>
+    {startGold===0?<Card style={{textAlign:"center"}}><div style={{fontSize:11,color:T.txtD,marginBottom:8}}>Alle 4 Helden erstellt! Jetzt Startgold wuerfeln (3W6 x 3).</div>
+      <Btn primary onClick={()=>setStartGold((d6()+d6()+d6())*3)}>Gold wuerfeln!</Btn></Card>
     :<div>
-      <div style={{textAlign:"center",marginBottom:8}}><div style={{fontSize:28,fontWeight:900,color:"#FFC107"}}>{startGold}G</div></div>
-      <div style={{maxHeight:160,overflow:"auto"}}>{ITEMS.filter(i=>i.tier<=0&&(i.nk||i.fk||i.rw||i.heal||i.rum)).map(it=>(<div key={it.id} style={{display:"flex",alignItems:"center",gap:6,padding:"3px 0",borderBottom:`1px solid ${T.border}22`}}>
-        <span>{it.emoji}</span><div style={{flex:1}}><div style={{fontSize:11,color:T.parch}}>{it.name}</div>
-          <div style={{fontSize:8,color:T.txtD}}>{it.nk>0?`NK+${it.nk} `:""}{it.fk>0?`FK+${it.fk} `:""}{it.rw>0?`RW+${it.rw} `:""}{it.heal?`Heal+${it.heal} `:""}{it.rum?`+${it.rum}Rum`:""}{it.heavy?` [schwer]`:""}</div></div>
-        <Btn small primary onClick={()=>buyStartItem(it)} disabled={startGold<it.cost} style={{width:"auto",minWidth:50}}>{it.cost}G</Btn></div>))}</div>
-      <div style={{textAlign:"center",marginTop:6}}><Badge color="#FFC107">{startGold}G uebrig</Badge></div>
-      <div style={{marginTop:8}}><Btn primary onClick={nextHero}>{setupIdx<3?`Pirat ${setupIdx+2}`:"Fertig!"}</Btn></div></div>}</Card>}
+      <div style={{textAlign:"center",marginBottom:8}}><span style={{fontSize:24,fontWeight:900,color:"#FFC107",fontFamily:"'Cinzel',serif"}}>{startGold}G</span><span style={{fontSize:11,color:T.txtD}}> Startkapital</span></div>
+      {/* ALL 4 HEROES SIDE BY SIDE */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
+        {heroes.filter(Boolean).map((h,i)=>(<div key={h.id} onClick={()=>setSelHero(i)}
+          style={{padding:8,borderRadius:10,background:selHero===i?T.gold+"22":T.card,border:`2px solid ${selHero===i?T.gold:T.border}`,cursor:"pointer"}}>
+          <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:3}}>
+            <span style={{fontSize:13}}>{h.emoji}</span>
+            <span style={{fontSize:11,fontWeight:700,color:selHero===i?T.goldL:T.parch,fontFamily:"'Cinzel',serif"}}>{h.name}</span>
+          </div>
+          <div style={{fontSize:9,color:T.txtD}}>{PROFS[h.profession]?.label} · ST:{h.st} GE:{h.ge} IN:{h.in_}</div>
+          <div style={{fontSize:9,color:T.txtD}}>NK:{hNK(h,[])} RW:{hRW(h)} HP:{h.maxHp} Schwer:{hCurHeavy(h)}/{hMaxHeavy(h)}</div>
+          {(h.equipment||[]).length>0&&<div style={{fontSize:9,color:T.gold,marginTop:2}}>{h.equipment.map(e=>e.emoji+" "+e.name).join(", ")}</div>}
+          {(h.equipment||[]).length===0&&<div style={{fontSize:9,color:T.red,marginTop:2}}>Keine Ausruestung</div>}
+        </div>))}
+      </div>
+      <div style={{fontSize:11,color:T.gold,marginBottom:4}}>Einkauf fuer: <span style={{fontWeight:900}}>{heroes[selHero]?.emoji} {heroes[selHero]?.name}</span> <span style={{fontSize:9,color:T.txtD}}>(Tippe oben auf einen Helden zum Wechseln)</span></div>
+      <div style={{maxHeight:200,overflow:"auto",marginBottom:8}}>
+        {ITEMS.filter(i=>i.tier<=0&&(i.nk||i.fk||i.rw||i.heal||i.rum)).map(it=>{
+          const canEquip=!it.heavy||hCurHeavy(heroes[selHero])<hMaxHeavy(heroes[selHero]);
+          const alreadyHas=(heroes[selHero]?.equipment||[]).find(e=>e.id===it.id);
+          return(<div key={it.id} style={{display:"flex",alignItems:"center",gap:6,padding:"4px 0",borderBottom:`1px solid ${T.border}22`}}>
+            <span style={{fontSize:13}}>{it.emoji}</span>
+            <div style={{flex:1}}><div style={{fontSize:11,color:T.parch}}>{it.name}{alreadyHas?" (hat schon)":""}</div>
+              <div style={{fontSize:8,color:T.txtD}}>{it.nk>0?`NK+${it.nk} `:""}{it.fk>0?`FK+${it.fk} `:""}{it.rw>0?`RW+${it.rw} `:""}{it.heal?`Heal+${it.heal} `:""}{it.rum?`+${it.rum}Rum`:""}{it.heavy?" [schwer]":""}</div></div>
+            <Btn small primary onClick={()=>buyStartItem(it)} disabled={startGold<it.cost||(!canEquip&&(it.nk||it.fk||it.rw))||!!alreadyHas} style={{width:"auto",minWidth:50}}>{it.cost}G</Btn>
+          </div>);})}
+      </div>
+      <Btn primary onClick={()=>setCStep("done")}>Fertig ausgeruested!</Btn>
+    </div>}
+  </div>}
   {cStep==="done"&&<div>
-    <Card><div style={{fontSize:14,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:8}}>CREW</div>
-      {heroes.filter(Boolean).map((h,i)=>(<div key={i} style={{display:"flex",gap:6,alignItems:"center",padding:"4px 0"}}>
-        <span>{h.emoji}</span><div style={{flex:1}}><div style={{fontSize:12,color:T.parch}}>{h.name}</div>
-          <div style={{fontSize:8,color:T.txtD}}>BW:{h.bw} ST:{h.st} GE:{h.ge} IN:{h.in_} HP:{h.maxHp} NK:{hNK(h,[])}</div></div>
-        <Badge>{PROFS[h.profession]?.label}</Badge></div>))}</Card>
-    <Btn primary onClick={finishSetup}>Bereit!</Btn></div>}
+    <Card><div style={{fontSize:14,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:8}}>EURE CREW</div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+      {heroes.filter(Boolean).map((h,i)=>(<div key={i} style={{padding:8,background:T.bg,borderRadius:8}}>
+        <div style={{display:"flex",gap:4,alignItems:"center",marginBottom:3}}>
+          <span style={{fontSize:14}}>{h.emoji}</span><span style={{fontSize:11,color:T.parch,fontWeight:700,fontFamily:"'Cinzel',serif"}}>{h.name}</span></div>
+        <Badge>{PROFS[h.profession]?.label}</Badge>
+        <div style={{fontSize:8,color:T.txtD,marginTop:3}}>BW:{h.bw} ST:{h.st} GE:{h.ge} IN:{h.in_}</div>
+        <div style={{fontSize:8,color:T.txtD}}>HP:{h.maxHp} NK:{hNK(h,[])} RW:{hRW(h)}</div>
+        {(h.equipment||[]).length>0&&<div style={{fontSize:8,color:T.gold,marginTop:2}}>{h.equipment.map(e=>e.emoji+" "+e.name).join(", ")}</div>}
+      </div>))}</div></Card>
+    <div style={{textAlign:"center",marginBottom:8}}><Badge color="#FFC107">{startGold}G uebrig (wird mitgenommen)</Badge></div>
+    <Btn primary onClick={finishSetup}>Auslaufen!</Btn></div>}
 </div>);
 
 const PlayScreen=()=>{const other=game?.players?.find(p=>p.id!==playerId);
