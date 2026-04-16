@@ -299,14 +299,14 @@ lv=>({text:ft("{cn} bewacht den tiefsten Raum! Ein uraltes Wesen, gebunden an di
 ],
 hafen:[
 lv=>({text:ft("'Hey Landratte!' Ein besoffener Kerl in der Taverne wirft euch einen Krug an den Kopf! Prügelei! ❗"),type:"skilltest",stat:"st",diff:3+lv,pass:{ruhm:2,ehre:1,gold:3},fail:{gold:-2}}),
-lv=>({text:ft("In der verrauchten Taverne flüstert ein einäugiger Matrose: '{tn}! Vergraben nahe dem Korallenriff. Ich hab die Karte — aber die hat ihren Preis, Käpt'n!'"),type:"choice",opts:["Kaufen (8G)","Nein"],rews:[{gold:-8,ruhm:4,ehre:1},{}]}),
+lv=>({text:ft("In der verrauchten Taverne flüstert ein einäugiger Matrose: '{tn}! Vergraben nahe dem Korallenriff. Ich hab die Karte — aber die hat ihren Preis, Käpt'n!'"),type:"choice",opts:["Karte kaufen (8G)","Nein"],rews:[{gold:-8,ruhm:2,quest:true},{}]}),
 lv=>({text:ft("Die Crew feiert! Rum fließt in Strömen, Seemannslieder schallen durch die Nacht! Morgen werden Köpfe brummen — aber heute lebt man!"),type:"loot",gold:1+roll(3),ruhm:1,rum:3}),
 lv=>({text:ft("'Haltet den Dieb!' Ein flinker Taschendieb hat sich euren Geldbeutel geschnappt und rennt durch die Gassen!"),type:"skilltest",stat:"ge",diff:3+lv,pass:{gold:5,ruhm:2},fail:{gold:-4}}),
-lv=>({text:ft("Ein geheimnisvoller Fremder in dunklem Mantel winkt euch in eine Ecke der Taverne: 'Ich habe Informationen über einen {adj} Schatz — {tn}! Aber die kosten 8 Gold, Käpt'n.'"),type:"choice",opts:["Kaufen (8G)","Ablehnen"],rews:[{gold:-8,ruhm:5,ehre:1},{}]}),
+lv=>({text:ft("Ein geheimnisvoller Fremder in dunklem Mantel winkt euch in eine Ecke der Taverne: 'Ich habe Informationen über einen {adj} Schatz — {tn}! Aber die kosten 8 Gold, Käpt'n.'"),type:"choice",opts:["Karte kaufen (8G)","Ablehnen"],rews:[{gold:-8,ruhm:2,quest:true},{}]}),
 ],
 dorf:[
 lv=>({text:ft("Die Fischer des Dorfes bitten um Hilfe: '{cn} terrorisieren unsere Bucht! Wir haben Gold gesammelt — bitte, Käpt'n!'"),type:"choice",opts:["Helfen! ❗","Nicht unser Problem"],rews:[{combat:mkE(ft("{cn}"),lv),reward:{gold:5+roll(5),ruhm:3,ehre:1}},{ruhm:-1}]}),
-lv=>({text:ft("Der Dorfälteste nimmt euch beiseite: 'Ich bin alt, aber ich erinnere mich — {tn} liegt {adj} verborgen, westlich von hier...' Er zeichnet eine Karte in den Sand."),type:"loot",gold:2+roll(5),ruhm:3,ehre:1}),
+lv=>({text:ft("Der Dorfälteste nimmt euch beiseite: 'Ich bin alt, aber ich erinnere mich — {tn} liegt {adj} verborgen, westlich von hier...' Er zeichnet euch eine Schatzkarte in den Sand."),type:"loot",gold:2+roll(3),ruhm:2,quest:true}),
 lv=>({text:ft("Frische Vorräte! Die Dorfbewohner sind gastfreundlich. Frisches Obst, gebratener Fisch und — natürlich — selbstgebrannter Rum!"),type:"heal",amount:3}),
 lv=>({text:ft("Kinder laufen aufgeregt neben eurer Crew her: 'Echte Piraten! Zeigt uns eure Schwerter!' Die Crew genießt die Bewunderung."),type:"loot",gold:1+roll(3),ruhm:2,rum:1}),
 ],
@@ -421,11 +421,11 @@ const resumeGame=async(s)=>{const g=await api.load(s.gid);if(!g){setMsg("Nicht g
 
 // ── Game Create/Join ──
 const createGame=async()=>{if(!playerName.trim()){setMsg("Name!");return;}const gid=uid(),pid=uid();
-  const g={id:gid,turn:1,currentPlayerIndex:0,log:[],players:[{id:pid,name:playerName.trim(),position:"tortuga",ehre:0,ruhm:0,gold:0,rum:10,ship:"jolle",heroes:[],curses:[],ready:false}],phase:"lobby",winner:null};
+  const g={id:gid,turn:1,currentPlayerIndex:0,log:[],players:[{id:pid,name:playerName.trim(),position:"tortuga",ehre:0,ruhm:0,gold:0,rum:10,ship:"jolle",heroes:[],curses:[],inv:[],quests:[],ready:false}],phase:"lobby",winner:null};
   await api.create(g);setGameId(gid);setPlayerId(pid);setGame(g);setPhase("lobby");
   saveSess({gid,pid,pname:playerName.trim(),oname:"...",date:new Date().toISOString(),pos:"tortuga",ehre:0});setSessions(getSess());};
 const joinGame=async()=>{if(!playerName.trim()||!joinCode.trim()){setMsg("Name & Code!");return;}const g=await api.load(joinCode.trim());if(!g){setMsg("Nicht gefunden!");return;}if(g.players.length>=2){setMsg("Voll!");return;}
-  const pid=uid();g.players.push({id:pid,name:playerName.trim(),position:"puerto",ehre:0,ruhm:0,gold:0,rum:10,ship:"jolle",heroes:[],curses:[],ready:false});
+  const pid=uid();g.players.push({id:pid,name:playerName.trim(),position:"puerto",ehre:0,ruhm:0,gold:0,rum:10,ship:"jolle",heroes:[],curses:[],inv:[],quests:[],ready:false});
   await api.save(g);setGameId(g.id);setPlayerId(pid);setGame(g);setPhase("lobby");saveSI(g);};
 
 // ── Setup ──
@@ -487,6 +487,12 @@ const applyReward=async(rw,g,pi,koList)=>{
   if(rw.dmgAll)parts.push(`−${rw.dmgAll}HP alle!`);
   if(rw.curse){const c={...pick(CURSES)};g.players[pi].curses=[...(g.players[pi].curses||[]),c];parts.push(`FLUCH: ${c.name}!`);}
   if(rw.removeCurse&&(g.players[pi].curses||[]).length>0){g.players[pi].curses.pop();parts.push("Fluch gebrochen!");}
+  if(rw.quest){
+    const questRegs=REGIONS.filter(r=>r.dungeon&&r.id!==g.players[pi].position&&(g.players[pi].ehre||0)>=r.minE);
+    if(questRegs.length){const target=pick(questRegs);
+      g.players[pi].quests=[...(g.players[pi].quests||[]),{id:uid(),target:target.id,name:pick(TN),lv:target.lv}];
+      parts.push(`🗺️ Schatzkarte! Ziel: ${target.name}`);}
+    else parts.push("Schatzkarte führt ins Nichts...");}
   if(parts.length>0)setMsg(parts.join(" "));
   // Check milestones
   const newE=g.players[pi].ehre;MILESTONES.forEach(m=>{if(newE>=m.e&&newE-eG<m.e)setMsg(`🏆 ${m.title}! ${m.msg}`);});
@@ -620,6 +626,27 @@ const sellItem=async(hIdx,eIdx)=>{const g={...game};const pi=g.players.findIndex
 const buyShip=async ship=>{if((me?.gold||0)<ship.cost)return;const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
   g.players[pi].gold-=ship.cost;g.players[pi].ship=ship.id;setMsg(ship.name+"!");await api.save(g);setGame(g);};
 
+// ── Dungeon functions ──
+const startDungeon=(dg)=>{
+  const enemy=mkE(dg.boss,curReg.lv+2);
+  const reward={gold:15+curReg.lv*5+roll(15),ruhm:5+curReg.lv,ehre:Math.ceil(curReg.lv/2)};
+  // Dungeon has rooms - for now simplified as single boss fight with higher rewards
+  setMsg(`Dungeon: ${dg.boss}! ${dg.rooms} Räume voller Gefahren!`);
+  startCombat(enemy,reward);
+};
+const startQuestDungeon=async(quest)=>{
+  const reg=REGIONS.find(r=>r.id===quest.target);
+  const lv=quest.lv||reg?.lv||3;
+  const enemy=mkE("Hüter von "+quest.name,lv+3);
+  const reward={gold:20+lv*8+roll(20),ruhm:6+lv,ehre:Math.ceil(lv/2)+1};
+  // Remove quest from player
+  const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
+  g.players[pi].quests=(g.players[pi].quests||[]).filter(q=>q.id!==quest.id);
+  await api.save(g);setGame(g);
+  setMsg(`Schatzkarte: ${quest.name}! Der Schatz ist bewacht!`);
+  startCombat(enemy,reward);
+};
+
 // ── Inventory functions ──
 const unequipItem=async(hIdx,eIdx)=>{const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
   const h=g.players[pi].heroes[hIdx];if(!h)return;const item=h.eq[eIdx];if(!item)return;
@@ -692,6 +719,7 @@ const MapView=()=>{const conns=curReg?curReg.conn:[];
         {other&&<div style={{position:"absolute",top:-6,right:-6,fontSize:10}}>🏴‍☠️</div>}
         <div style={{fontSize:here?8:7,color:here?T.goldL:canGo?T.parch:T.txtD+"55",fontFamily:"'Cinzel',serif",whiteSpace:"nowrap",marginTop:1}}>{r.name}</div>
         <div style={{fontSize:7,color:canGo?T.gold:T.txtD+"44"}}>{locked?`🔒${r.minE}`:`Lv${r.lv}`}</div>
+        {(me?.quests||[]).some(q=>q.target===r.id)&&<div style={{fontSize:9}}>🗺️</div>}
       </div>;})}
   </div>
   <div style={{display:"flex",flexWrap:"wrap",gap:4,padding:"6px 10px",background:T.bg+"cc",borderTop:`1px solid ${T.border}33`}}>
@@ -824,7 +852,8 @@ const PlayScreen=()=>{const other=game?.players?.find(p=>p.id!==playerId);
       {curReg?.port&&<Btn onClick={()=>{setRName("");setRRace(null);setRProf(null);setPhase("recruit");}}>Hafen{deadH.length>0?` (${deadH.length} K.O.)`:""}</Btn>}
       {curReg?.port&&<Btn onClick={()=>setPhase("levelup")}>Aufwerten 🏆</Btn>}
       <Btn onClick={()=>setPhase("inventory")}>Inventar 🎒</Btn>
-      {curReg?.dungeon&&<Btn onClick={()=>setMsg("Dungeons kommen bald!")}>Dungeon ⚔️</Btn>}
+      {curReg?.dungeon&&<Btn onClick={()=>startDungeon(curReg.dungeon)}>Dungeon: {curReg.dungeon.boss} ⚔️</Btn>}
+      {(me?.quests||[]).filter(q=>q.target===curReg?.id).map(q=>(<Btn key={q.id} onClick={()=>startQuestDungeon(q)}>🗺️ Schatzkarte: {q.name} ⚔️</Btn>))}
     </div>}
     {game?.log?.length>0&&<Card style={{marginTop:8}}><div style={{maxHeight:50,overflow:"auto"}}>{game.log.slice(-4).reverse().map((l,i)=><div key={i} style={{fontSize:9,color:T.txtD}}>{l}</div>)}</div></Card>}
   </div>;};
