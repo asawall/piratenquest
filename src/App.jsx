@@ -207,7 +207,7 @@ lv=>({text:ft("Euer Ausguck brüllt: 'Land in Sicht!' Eine {adj} Insel, die auf 
 lv=>({text:ft("Donnergrollen! Schwarze Wolken türmen sich am Horizont. Der Navigator muss das Schiff durch den Sturm steuern oder ihr geht unter!"),type:"skilltest",stat:"ge",diff:5+lv,pass:{ruhm:3,ehre:1},fail:{gold:-3,dmgAll:1}}),
 lv=>({text:ft("Eine Marinefregatte unter königlicher Flagge! Der Offizier an Deck hebt das Fernrohr. Verdammt — er hat die Piratenflagge gesehen!"),type:"choice",opts:["Falsche Flagge hissen","Kampfstationen! ❗","Fliehen!"],rews:[{ruhm:2},{combat:mkE("Marine-Fregatte",lv+1),reward:{gold:12+roll(8),ruhm:4,ehre:2}},{ruhm:-1}]}),
 lv=>({text:ft("Delfine! Ein ganzer Schwarm begleitet euer Schiff. Die Crew nimmt es als gutes Omen — heute Abend gibt's extra Rum!"),type:"loot",gold:1+roll(3),ruhm:1,rum:2}),
-lv=>({text:ft("'Würfelduell, Landratte?' Kapitän {pn} von der {sn} grinst euch über die Reling an und wedelt mit einem Beutel voll Goldmünzen. 5 Gold Einsatz!"),type:"duel",bet:5}),
+lv=>({text:ft("Ein Handelsschiff in Seenot! Die {sn} hat ein Leck und droht zu sinken. Kapitän {pn} winkt verzweifelt: 'Rettet uns — ihr bekommt unsere gesamte Ladung!'"),type:"choice",opts:["Retten!","Plündern! ❗","Weiterfahren"],rews:[{gold:6+roll(8),ruhm:4,ehre:1},{combat:mkE("Verzweifelte Matrosen",lv),reward:{gold:12+roll(10),ruhm:2}},{}]}),
 ],
 handel:[
 lv=>({text:ft("Eine prächtige Galeone! Die {sn}, vollbeladen mit {adj} Schätzen. Kapitän {pn} steht breitbeinig an Deck. Der Jackpot, Käpt'n — aber die Wachen sind zahlreich!"),type:"choice",opts:["Überfallen! ❗","Handeln","Laufen lassen"],rews:[{combat:mkE("Galeonen-Wachen",lv+1),reward:{gold:15+roll(15),ruhm:4,ehre:2}},{gold:4+roll(5),ruhm:1},{}]}),
@@ -302,7 +302,7 @@ lv=>({text:ft("'Hey Landratte!' Ein besoffener Kerl in der Taverne wirft euch ei
 lv=>({text:ft("In der verrauchten Taverne flüstert ein einäugiger Matrose: '{tn}! Vergraben nahe dem Korallenriff. Ich hab die Karte — aber die hat ihren Preis, Käpt'n!'"),type:"choice",opts:["Kaufen (8G)","Nein"],rews:[{gold:-8,ruhm:4,ehre:1},{}]}),
 lv=>({text:ft("Die Crew feiert! Rum fließt in Strömen, Seemannslieder schallen durch die Nacht! Morgen werden Köpfe brummen — aber heute lebt man!"),type:"loot",gold:1+roll(3),ruhm:1,rum:3}),
 lv=>({text:ft("'Haltet den Dieb!' Ein flinker Taschendieb hat sich euren Geldbeutel geschnappt und rennt durch die Gassen!"),type:"skilltest",stat:"ge",diff:3+lv,pass:{gold:5,ruhm:2},fail:{gold:-4}}),
-lv=>({text:ft("'Würfelduell, Landratte?' Ein breit grinsender Pirat namens {pn} wedelt mit Goldmünzen. 5 Gold Einsatz!"),type:"duel",bet:5}),
+lv=>({text:ft("Ein geheimnisvoller Fremder in dunklem Mantel winkt euch in eine Ecke der Taverne: 'Ich habe Informationen über einen {adj} Schatz — {tn}! Aber die kosten 8 Gold, Käpt'n.'"),type:"choice",opts:["Kaufen (8G)","Ablehnen"],rews:[{gold:-8,ruhm:5,ehre:1},{}]}),
 ],
 dorf:[
 lv=>({text:ft("Die Fischer des Dorfes bitten um Hilfe: '{cn} terrorisieren unsere Bucht! Wir haben Gold gesammelt — bitte, Käpt'n!'"),type:"choice",opts:["Helfen! ❗","Nicht unser Problem"],rews:[{combat:mkE(ft("{cn}"),lv),reward:{gold:5+roll(5),ruhm:3,ehre:1}},{ruhm:-1}]}),
@@ -532,18 +532,20 @@ const doCombatRound=()=>{
   let shipBonus=isSea&&isFK?myShip.kan:0;
   // Active skill effects
   let skillMult=1;let ignoreRW=false;let skillMsg="";
-  if(activeSkill){
-    if(activeSkill.id==="s_rausch"&&!isFK){groupVal=Math.floor(groupVal*1.5);skillMsg="Kampfrausch! NK×1.5";}
-    if(activeSkill.id==="s_breit"&&isFK){groupVal=Math.floor(groupVal*2);skillMsg="Breitseite! FK×2";}
-    if(activeSkill.id==="s_doppel"){skillMult=2;skillMsg="Doppelschlag bereit!";}
-    if(activeSkill.id==="s_schild"){ignoreRW=true;skillMsg="Schildbrecher! RW ignoriert!";}
-    if(activeSkill.id==="s_geist"){groupVal+=5;skillMsg="Geisterruf! +5";}
-    if(activeSkill.id==="s_toten"&&!isFK){groupVal+=8;skillMsg="Totenbeschwörung! +8 NK";}
-    if(activeSkill.id==="s_fluch"){combat.enemy.nk=Math.max(0,combat.enemy.nk-3);skillMsg="Verfluchung! Gegner NK−3";}
-    if(activeSkill.id==="s_inferno"&&isFK){skillMult=3;skillMsg="INFERNO! Schaden×3";}
-    if(activeSkill.id==="s_praez"&&isFK){ignoreRW=true;skillMsg="Präzisionsschuss! RW ignoriert";}
-    setActiveSkills([]);
-  }
+  const skillMsgs=[];
+  activeSkills.forEach(sk=>{
+    if(sk.id==="s_rausch"&&!isFK){groupVal=Math.floor(groupVal*1.5);skillMsgs.push("Kampfrausch! NK×1.5");}
+    if(sk.id==="s_breit"&&isFK){groupVal=Math.floor(groupVal*2);skillMsgs.push("Breitseite! FK×2");}
+    if(sk.id==="s_doppel"){skillMult=2;skillMsgs.push("Doppelschlag!");}
+    if(sk.id==="s_schild"){ignoreRW=true;skillMsgs.push("Schildbrecher!");}
+    if(sk.id==="s_geist"){groupVal+=5;skillMsgs.push("Geisterruf! +5");}
+    if(sk.id==="s_toten"&&!isFK){groupVal+=8;skillMsgs.push("Totenbeschwörung! +8");}
+    if(sk.id==="s_fluch"){skillMsgs.push("Verfluchung! NK−3");}
+    if(sk.id==="s_inferno"&&isFK){skillMult=3;skillMsgs.push("INFERNO! ×3");}
+    if(sk.id==="s_praez"&&isFK){ignoreRW=true;skillMsgs.push("Präzisionsschuss!");}
+  });
+  skillMsg=skillMsgs.join(" | ");
+  setActiveSkills([]);
   const pRoll=d6();const pTotal=pRoll+groupVal+shipBonus;
   const eRoll=d6();const eTotal=eRoll+combat.enemy.nk;
   const logs=[...cLog];
@@ -551,7 +553,7 @@ const doCombatRound=()=>{
   if(skillMsg)logs.push(`  🌟 ${skillMsg}`);
   logs.push(`  Crew: W6(${pRoll}) + ${groupVal}${isFK?"FK":"NK"}${shipBonus?` + ${shipBonus}🔫`:""} = ${pTotal}`);
   logs.push(`  ${combat.enemy.name}: W6(${eRoll}) + ${combat.enemy.nk}NK = ${eTotal}`);
-  const ne={...combat.enemy};const koList=[...(combat.koThisRound||[])];
+  const ne={...combat.enemy};if(activeSkills.some(sk=>sk.id==="s_fluch"))ne.nk=Math.max(0,ne.nk-3);const koList=[...(combat.koThisRound||[])];
   if(pTotal>eTotal){
     const rawDmg=(pTotal-eTotal)*skillMult;const eRW=ignoreRW?0:(ne.rw||0);
     const dmg=Math.max(1,rawDmg-eRW);ne.curHp=Math.max(0,ne.curHp-dmg);
@@ -881,8 +883,8 @@ const CombatScreen=()=>{const alive=aliveH.length;const eDead=combat?.enemy?.cur
     {!eDead&&!pDead&&availSkills.length>0&&<Card style={{padding:8}}>
       <div style={{fontSize:10,color:T.gold,marginBottom:4}}>Fertigkeit einsetzen:</div>
       <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
-        <div onClick={()=>setActiveSkill(null)} style={{padding:"4px 8px",borderRadius:6,fontSize:10,cursor:"pointer",background:activeSkills.length===0?T.gold+"44":T.card,border:`1px solid ${T.border}`,color:T.parch}}>Keine</div>
-        {availSkills.map(s=>(<div key={s.id} onClick={()=>setActiveSkills(prev=>prev.find(x=>x.id===s.id)?prev.filter(x=>x.id!==s.id):[...prev,s])} style={{padding:"4px 8px",borderRadius:6,fontSize:10,cursor:"pointer",background:activeSkills.find(x=>x.id===s.id)?T.gold+"44":T.card,border:`1px solid ${activeSkill?.id===s.id?T.gold:T.border}`,color:T.parch}}>
+        <div onClick={()=>setActiveSkills([])} style={{padding:"4px 8px",borderRadius:6,fontSize:10,cursor:"pointer",background:activeSkills.length===0?T.gold+"44":T.card,border:`1px solid ${T.border}`,color:T.parch}}>Keine</div>
+        {availSkills.map(s=>(<div key={s.id} onClick={()=>setActiveSkills(prev=>prev.find(x=>x.id===s.id)?prev.filter(x=>x.id!==s.id):[...prev,s])} style={{padding:"4px 8px",borderRadius:6,fontSize:10,cursor:"pointer",background:activeSkills.find(x=>x.id===s.id)?T.gold+"44":T.card,border:`1px solid ${activeSkills.find(x=>x.id===s.id)?T.gold:T.border}`,color:T.parch}}>
           {s.name}<div style={{fontSize:8,color:T.txtD}}>{s.desc}</div></div>))}</div></Card>}
     <Card style={{maxHeight:100,overflow:"auto",background:T.bg}}>{cLog.map((l,i)=><div key={i} style={{fontSize:10,color:l.includes("💥")?T.red:l.includes("⚔️")||l.includes("🔥")?T.green:T.parch,padding:"1px 0"}}>{l}</div>)}</Card>
     {eDead?<div style={{marginTop:8}}><div style={{textAlign:"center",color:T.green,fontSize:14,marginBottom:6}}>
