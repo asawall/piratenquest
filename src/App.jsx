@@ -78,7 +78,7 @@ const PROFS={
     skills:[
       {id:"s_fluch",name:"Verfluchung",desc:"Gegner NK −3, 2 Runden",active:true,cd:4,stat:null,mod:0},
       {id:"s_geist",name:"Geisterruf",desc:"+5 NK/FK diese Runde",active:true,cd:5,stat:"in_",mod:1},
-      {id:"s_schutz",name:"Schutzamulett",desc:"+1 RW Gruppe passiv",active:false,stat:"in_",mod:1},
+      {id:"s_schutz",name:"Schutzamulett",d:"Magischer Schutz, lenkt Angriffe ab",desc:"+1 RW Gruppe passiv",active:false,stat:"in_",mod:1},
       {id:"s_seele",name:"Seelenraub",desc:"Heilt 3 HP bei Kill",active:false,stat:"in_",mod:1},
       {id:"s_toten",name:"Totenbeschwörung",desc:"+8 NK eine Runde",active:true,cd:5,stat:"in_",mod:1},
     ]},
@@ -101,33 +101,33 @@ const SHIPS=[
 
 const ITEMS=[
   // m1=1H Melee, m2=2H Melee, r=Ranged, a=Armor, s=Shield, k=Consumable, t=Tool
-  {id:"dolch",s:"m1",name:"Dolch",nk:1,fk:0,rw:0,cost:3,em:"🔪",tier:0,hv:0},
-  {id:"saebel",s:"m1",name:"Entermesser",nk:2,fk:0,rw:0,cost:6,em:"🗡️",tier:0,hv:0},
-  {id:"enterhaken",s:"m1",name:"Enterhaken",nk:2,fk:0,rw:0,cost:5,em:"🪝",tier:0,hv:0},
-  {id:"rapier",s:"m1",name:"Rapier",nk:3,fk:0,rw:0,cost:14,em:"⚔️",tier:1,hv:0},
-  {id:"axt",s:"m2",name:"Enteraxt",nk:4,fk:0,rw:0,cost:20,em:"🪓",tier:1,hv:1},
-  {id:"dreizack",s:"m2",name:"Dreizack",nk:3,fk:0,rw:0,cost:18,em:"🔱",tier:1,hv:1},
-  {id:"flamberg",s:"m2",name:"Flamberge",nk:5,fk:0,rw:0,cost:35,em:"⚔️",tier:2,hv:1},
-  {id:"neptun",s:"m2",name:"Neptunklinge",nk:6,fk:0,rw:0,cost:60,em:"🔱",tier:3,hv:1},
-  {id:"pistole",s:"r",name:"Pistole",nk:0,fk:2,rw:0,cost:8,em:"🔫",tier:0,hv:0},
-  {id:"muskete",s:"r",name:"Muskete",nk:0,fk:3,rw:0,cost:16,em:"🔫",tier:1,hv:1},
-  {id:"doppellauf",s:"r",name:"Doppellauf",nk:0,fk:4,rw:0,cost:30,em:"🔫",tier:2,hv:0},
-  {id:"donner",s:"r",name:"Donnerbüchse",nk:0,fk:5,rw:0,cost:55,em:"💥",tier:3,hv:1},
-  {id:"leder",s:"a",name:"Lederwams",nk:0,fk:0,rw:1,cost:6,em:"🧥",tier:0,hv:0},
-  {id:"kette",s:"a",name:"Kettenhemd",nk:0,fk:0,rw:2,cost:15,em:"🛡️",tier:1,hv:1},
-  {id:"brust",s:"a",name:"Brustpanzer",nk:0,fk:0,rw:3,cost:28,em:"🛡️",tier:2,hv:1},
-  {id:"drache",s:"a",name:"Drachenschuppe",nk:0,fk:0,rw:4,cost:50,em:"🐉",tier:3,hv:1},
-  {id:"buckler",s:"s",name:"Buckler",nk:0,fk:0,rw:1,cost:7,em:"🛡️",tier:0,hv:0},
-  {id:"amulett",s:"s",name:"Schutzamulett",nk:0,fk:0,rw:1,cost:25,em:"🧿",tier:2,hv:0},
-  {id:"rum",s:"k",name:"Fass Rum",nk:0,fk:0,rw:0,cost:4,em:"🍺",tier:0,hv:0,rum:5},
-  {id:"proviant",s:"k",name:"Proviant",nk:0,fk:0,rw:0,cost:3,em:"🍖",tier:0,hv:0,heal:3},
-  {id:"tinktur",s:"k",name:"Kräutertinktur",nk:0,fk:0,rw:0,cost:10,em:"🧪",tier:1,hv:0,heal:5},
-  {id:"elixier",s:"k",name:"Voodoo-Elixier",nk:0,fk:0,rw:0,cost:25,em:"🧪",tier:2,hv:0,heal:10},
-  {id:"kugeln",s:"k",name:"Kanonenkugeln",nk:0,fk:0,rw:0,cost:5,em:"💣",tier:0,hv:0},
-  {id:"dynamit",s:"k",name:"Dynamit",nk:0,fk:0,rw:0,cost:12,em:"🧨",tier:1,hv:0},
-  {id:"fernrohr",s:"t",name:"Fernrohr",nk:0,fk:0,rw:0,cost:10,em:"🔭",tier:0,hv:0},
-  {id:"kompass",s:"t",name:"Mag. Kompass",nk:0,fk:0,rw:0,cost:22,em:"🧭",tier:1,hv:0},
-  {id:"voodoo",s:"t",name:"Voodoo-Puppe",nk:0,fk:0,rw:0,cost:18,em:"🪆",tier:1,hv:0},
+  {id:"dolch",s:"m1",name:"Dolch",d:"Leichte Einhandwaffe, schnell und vielseitig",nk:1,fk:0,rw:0,cost:3,em:"🔪",tier:0,hv:0},
+  {id:"saebel",s:"m1",name:"Entermesser",d:"Klassische Piratenwaffe fürs Entern",nk:2,fk:0,rw:0,cost:6,em:"🗡️",tier:0,hv:0},
+  {id:"enterhaken",s:"m1",name:"Enterhaken",d:"Zum Entern und Klettern, auch im Kampf brauchbar",nk:2,fk:0,rw:0,cost:5,em:"🪝",tier:0,hv:0},
+  {id:"rapier",s:"m1",name:"Rapier",d:"Elegante Fechtwaffe mit langer Klinge",nk:3,fk:0,rw:0,cost:14,em:"⚔️",tier:1,hv:0},
+  {id:"axt",s:"m2",name:"Enteraxt",d:"Wuchtige Zweihandaxt, durchschlägt Holz und Knochen",nk:4,fk:0,rw:0,cost:20,em:"🪓",tier:1,hv:1},
+  {id:"dreizack",s:"m2",name:"Dreizack",d:"Dreizinkige Zweihandwaffe, hält Gegner auf Distanz",nk:3,fk:0,rw:0,cost:18,em:"🔱",tier:1,hv:1},
+  {id:"flamberg",s:"m2",name:"Flamberge",d:"Gewellte Klinge, reißt tiefe Wunden",nk:5,fk:0,rw:0,cost:35,em:"⚔️",tier:2,hv:1},
+  {id:"neptun",s:"m2",name:"Neptunklinge",d:"Legendäre Meereswaffe, leuchtet blau im Mondlicht",nk:6,fk:0,rw:0,cost:60,em:"🔱",tier:3,hv:1},
+  {id:"pistole",s:"r",name:"Pistole",d:"Ein Schuss pro Runde, danach nachladen",nk:0,fk:2,rw:0,cost:8,em:"🔫",tier:0,hv:0},
+  {id:"muskete",s:"r",name:"Muskete",d:"Schwere Fernwaffe, hohe Durchschlagskraft",nk:0,fk:3,rw:0,cost:16,em:"🔫",tier:1,hv:1},
+  {id:"doppellauf",s:"r",name:"Doppellauf",d:"Zwei Schüsse ohne Nachladen!",nk:0,fk:4,rw:0,cost:30,em:"🔫",tier:2,hv:0},
+  {id:"donner",s:"r",name:"Donnerbüchse",d:"Legendäre Schrotflinte, verheerend auf kurze Distanz",nk:0,fk:5,rw:0,cost:55,em:"💥",tier:3,hv:1},
+  {id:"leder",s:"a",name:"Lederwams",d:"Leichter Schutz, behindert nicht",nk:0,fk:0,rw:1,cost:6,em:"🧥",tier:0,hv:0},
+  {id:"kette",s:"a",name:"Kettenhemd",d:"Guter Schutz gegen Hieb- und Stichwaffen",nk:0,fk:0,rw:2,cost:15,em:"🛡️",tier:1,hv:1},
+  {id:"brust",s:"a",name:"Brustpanzer",d:"Schwerer Plattenpanzer, exzellenter Schutz",nk:0,fk:0,rw:3,cost:28,em:"🛡️",tier:2,hv:1},
+  {id:"drache",s:"a",name:"Drachenschuppe",d:"Legendäre Rüstung aus Drachenhaut, nahezu undurchdringlich",nk:0,fk:0,rw:4,cost:50,em:"🐉",tier:3,hv:1},
+  {id:"buckler",s:"s",name:"Buckler",d:"Kleiner Faustschild zum Parieren",nk:0,fk:0,rw:1,cost:7,em:"🛡️",tier:0,hv:0},
+  {id:"amulett",s:"s",name:"Schutzamulett",d:"Magischer Schutz, lenkt Angriffe ab",nk:0,fk:0,rw:1,cost:25,em:"🧿",tier:2,hv:0},
+  {id:"rum",s:"k",name:"Fass Rum",d:"+5 Rum für die Crew-Moral",nk:0,fk:0,rw:0,cost:4,em:"🍺",tier:0,hv:0,rum:5},
+  {id:"proviant",s:"k",name:"Proviant",d:"Heilt alle lebenden Helden um 3 HP",nk:0,fk:0,rw:0,cost:3,em:"🍖",tier:0,hv:0,heal:3},
+  {id:"tinktur",s:"k",name:"Kräutertinktur",d:"Heilt alle lebenden Helden um 5 HP",nk:0,fk:0,rw:0,cost:10,em:"🧪",tier:1,hv:0,heal:5},
+  {id:"elixier",s:"k",name:"Voodoo-Elixier",d:"Mächtiger Heiltrank, +10 HP für alle",nk:0,fk:0,rw:0,cost:25,em:"🧪",tier:2,hv:0,heal:10},
+  {id:"kugeln",s:"k",name:"Kanonenkugeln",d:"Munition für Schiffskanonen",nk:0,fk:0,rw:0,cost:5,em:"💣",tier:0,hv:0},
+  {id:"dynamit",s:"k",name:"Dynamit",d:"Sprengstoff! +5 auf nächsten Fernkampfwurf",nk:0,fk:0,rw:0,cost:12,em:"🧨",tier:1,hv:0},
+  {id:"fernrohr",s:"t",name:"Fernrohr",d:"+1 auf Erkundungs-Events (IN-Tests)",nk:0,fk:0,rw:0,cost:10,em:"🔭",tier:0,hv:0},
+  {id:"kompass",s:"t",name:"Mag. Kompass",d:"+2 auf Navigation (IN-Tests auf See)",nk:0,fk:0,rw:0,cost:22,em:"🧭",tier:1,hv:0},
+  {id:"voodoo",s:"t",name:"Voodoo-Puppe",d:"Einmal-Einsatz: Gegner NK−5 für einen Kampf",nk:0,fk:0,rw:0,cost:18,em:"🪆",tier:1,hv:0},
 ];
 const TIER_FAME={0:0,1:10,2:25,3:40};
 
@@ -153,11 +153,11 @@ const REGIONS=[
   {id:"puerto",name:"Puerto Seguro",type:"dorf",x:22,y:85,minE:0,maxE:15,lv:1,conn:["flache_see","mangroven"],shop:"dorf",port:true},
   {id:"flache_see",name:"Flache See",type:"flach",x:38,y:75,minE:0,maxE:15,lv:1,conn:["tortuga","puerto","handelsweg","korallenriff","mangroven"]},
   {id:"handelsweg",name:"Handelsstraße",type:"handel",x:62,y:72,minE:0,maxE:20,lv:2,conn:["tortuga","flache_see","korallenriff","goldkueste"]},
-  {id:"mangroven",name:"Mangroven",type:"sumpf",x:15,y:65,minE:5,maxE:25,lv:2,conn:["puerto","flache_see","geisterinsel","schlangennest"]},
-  {id:"korallenriff",name:"Korallenriff",type:"riff",x:50,y:60,minE:8,maxE:30,lv:3,conn:["flache_see","handelsweg","nebelbank","haifischbucht"]},
+  {id:"mangroven",name:"Mangroven",type:"sumpf",x:15,y:65,minE:5,maxE:25,lv:2,conn:["puerto","flache_see","geisterinsel","schlangennest"],dungeon:{rooms:2,boss:"Sumpfkrokodil-König"}},
+  {id:"korallenriff",name:"Korallenriff",type:"riff",x:50,y:60,minE:8,maxE:30,lv:3,conn:["flache_see","handelsweg","nebelbank","haifischbucht"],dungeon:{rooms:2,boss:"Riffwächter"}},
   {id:"goldkueste",name:"Goldküste",type:"stadt",x:78,y:58,minE:10,maxE:35,lv:3,conn:["handelsweg","festung","haifischbucht"],shop:"stadt",port:true,tavern:true},
   {id:"nebelbank",name:"Nebelbank",type:"nebel",x:35,y:48,minE:12,maxE:40,lv:4,conn:["korallenriff","geisterinsel","bermuda"]},
-  {id:"haifischbucht",name:"Haifischbucht",type:"hai",x:65,y:45,minE:15,maxE:45,lv:4,conn:["korallenriff","goldkueste","vulkaninsel","krakentiefen"]},
+  {id:"haifischbucht",name:"Haifischbucht",type:"hai",x:65,y:45,minE:15,maxE:45,lv:4,conn:["korallenriff","goldkueste","vulkaninsel","krakentiefen"],dungeon:{rooms:3,boss:"Hai-König"}},
   {id:"geisterinsel",name:"Geisterinsel",type:"geister",x:18,y:42,minE:18,maxE:50,lv:5,conn:["mangroven","nebelbank","davyjones"]},
   {id:"schlangennest",name:"Schlangennest",type:"verlies",x:8,y:55,minE:15,maxE:50,lv:5,conn:["mangroven"],dungeon:{rooms:3,boss:"Schlangenkönigin"}},
   {id:"festung",name:"Festung San Carlos",type:"festung",x:85,y:48,minE:20,maxE:60,lv:5,conn:["goldkueste","vulkaninsel"],shop:"festung",dungeon:{rooms:4,boss:"Festungskommandant"}},
@@ -189,7 +189,12 @@ const ADJ=["verfluchte","goldene","vergessene","gespenstische","uralte","verrost
 const TN=["Aztekengold","Rubinkrone","Smaragdkelch","Neptuns Dreizack","Sirenenharfe","Krakens Herz","Davy Jones' Schlüssel","Poseidons Gürtel","Schwarzer Opal","Blutrubin","Mondperle","Vulkanjuwel","Korallendiadem","Gezeitenring","Meerjungfrauenträne","Piratenkönigs-Siegel","Kristallschädel","Flammenherz","Diamantsäbel","Obsidianmaske","Phönixfeder","Leviathans Schuppe","Weltenkompass","Schicksalswürfel"];
 
 function ft(t){return t.replace(/\{pn\}/g,()=>pick(PN)).replace(/\{sn\}/g,()=>pick(SN)).replace(/\{cn\}/g,()=>pick(CN)).replace(/\{adj\}/g,()=>pick(ADJ)).replace(/\{tn\}/g,()=>pick(TN));}
-function mkE(n,lv){const nk=8+lv*4+roll(6);const hp=4+lv*3+roll(4);const rw=Math.min(1+Math.floor(lv/2),5);return{name:n,nk,hp,rw};}
+function mkE(n,lv){const nk=8+lv*4+roll(6);const hp=4+lv*3+roll(4);const rw=Math.min(1+Math.floor(lv/2),5);
+  // 30% chance to drop loot item scaled to level
+  let loot=null;if(Math.random()<0.3){const tier=Math.min(3,Math.floor(lv/3));
+    const pool=ITEMS.filter(i=>(i.s==="m1"||i.s==="m2"||i.s==="r"||i.s==="a"||i.s==="s")&&i.tier<=tier);
+    if(pool.length)loot=pick(pool);}
+  return{name:n,nk,hp,rw,loot};}
 
 // Events per region type — atmospheric pirate text, every event has consequence
 const EVT={
@@ -388,8 +393,8 @@ const[cStep,setCStep]=useState("name");
 const[tName,setTName]=useState("");const[tRace,setTRace]=useState(null);const[tProf,setTProf]=useState(null);
 const[startGold,setStartGold]=useState(0);const[selHero,setSelHero]=useState(0);
 const[shopHero,setShopHero]=useState(0);const[showHelp,setShowHelp]=useState(false);const[showOpp,setShowOpp]=useState(false);
-const[rName,setRName]=useState("");const[rRace,setRRace]=useState(null);const[rProf,setRProf]=useState(null);
-const[activeSkill,setActiveSkill]=useState(null);const[duelState,setDuelState]=useState(null);
+const[rName,setRName]=useState("");const[inventory,setInventory]=useState([]);const[rRace,setRRace]=useState(null);const[rProf,setRProf]=useState(null);
+const[activeSkills,setActiveSkills]=useState([]);const[duelState,setDuelState]=useState(null);
 const[sessions,setSessions]=useState(getSess());
 const pollRef=useRef(null);
 
@@ -458,7 +463,9 @@ const checkWipe=async(g,pi,koThisRound)=>{
 // ── Move & Explore ──
 const moveTo=async rid=>{if(!isMyTurn)return;const r=REGIONS.find(x=>x.id===rid);if((me?.ehre||0)<r.minE){setMsg(`${r.minE}⭐ nötig!`);return;}
   const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);g.players[pi].position=rid;
-  g.log.push(`${me.name}: Segelt nach ${r.name}`);setMsg(`Angekommen: ${r.name} ${REMO[r.type]}`);await endTurn(g);};
+  g.log.push(`${me.name}: Segelt nach ${r.name}`);await api.save(g);setGame(g);
+  // Mandatory event after moving
+  const ev=genEv(r.type,r.lv,(me?.ehre||0),r.maxE);setEv(ev);setTestRes(null);setDuelState(null);setPhase("event");};
 const explore=()=>{if(!isMyTurn||!aliveH.length)return;
   const ev=genEv(curReg.type,curReg.lv,me?.ehre||0,curReg.maxE);
   setEv(ev);setTestRes(null);setDuelState(null);setPhase("event");};
@@ -517,7 +524,7 @@ const resolveSkillTest=async(passed)=>{
 };
 
 // ── COMBAT (GDD Kapitel 4: FK Runde 1, NK Runde 2+) ──
-const startCombat=(enemy,reward)=>{setCombat({enemy:{...enemy,curHp:enemy.hp},reward,round:1,koThisRound:[]});setCLog([`⚔️ Kampf gegen ${enemy.name}! (NK:${enemy.nk} HP:${enemy.hp} RW:${enemy.rw})`]);setActiveSkill(null);setPhase("combat");};
+const startCombat=(enemy,reward)=>{setCombat({enemy:{...enemy,curHp:enemy.hp},reward,round:1,koThisRound:[]});setCLog([`⚔️ Kampf gegen ${enemy.name}! (NK:${enemy.nk} HP:${enemy.hp} RW:${enemy.rw})`]);setActiveSkills([]);setPhase("combat");};
 const doCombatRound=()=>{
   const alive=me.heroes.filter(h=>h.hp>0);if(!alive.length)return;
   const isFK=combat.round===1;const phaseName=isFK?"FERNKAMPF":"NAHKAMPF";
@@ -535,7 +542,7 @@ const doCombatRound=()=>{
     if(activeSkill.id==="s_fluch"){combat.enemy.nk=Math.max(0,combat.enemy.nk-3);skillMsg="Verfluchung! Gegner NK−3";}
     if(activeSkill.id==="s_inferno"&&isFK){skillMult=3;skillMsg="INFERNO! Schaden×3";}
     if(activeSkill.id==="s_praez"&&isFK){ignoreRW=true;skillMsg="Präzisionsschuss! RW ignoriert";}
-    setActiveSkill(null);
+    setActiveSkills([]);
   }
   const pRoll=d6();const pTotal=pRoll+groupVal+shipBonus;
   const eRoll=d6();const eTotal=eRoll+combat.enemy.nk;
@@ -566,8 +573,14 @@ const endCombat=async won=>{const g={...game};const pi=g.players.findIndex(p=>p.
   if(won&&combat.reward){
     const rw={...combat.reward};
     // Hard win bonus
-    if(combat.enemy.nk>aliveH.reduce((s,h)=>s+hNK(h,myCurses),0))rw._hardWin=true;
+    const groupStrength=aliveH.reduce((s,h)=>s+hNK(h,myCurses),0);
+    if(combat.enemy.nk>groupStrength){rw._hardWin=true;rw.ehre=(rw.ehre||0)+1;rw.ruhm=(rw.ruhm||0)+2;rw.gold=(rw.gold||0)+5;}
     await applyReward(rw,g,pi,combat.koThisRound);
+    // Loot drop
+    if(combat.enemy.loot){const li=combat.enemy.loot;
+      const g2={...game};const pi2=g2.players.findIndex(p=>p.id===playerId);
+      g2.players[pi2].inv=[...(g2.players[pi2].inv||[]),{id:li.id,s:li.s,name:li.name,nk:li.nk||0,fk:li.fk||0,rw:li.rw||0,em:li.em,hv:li.hv||0}];
+      setMsg(prev=>(prev||"")+" Beute: "+li.em+li.name+"!");}
     // Schiffsarzt Wundversorgung
     const arzt=me.heroes.find(h=>h.hp>0&&(h.skills||[]).includes("s_wund"));
     if(arzt&&won){const wounded=g.players[pi].heroes.filter(h=>h.hp>0&&h.hp<h.maxHp);
@@ -604,6 +617,23 @@ const sellItem=async(hIdx,eIdx)=>{const g={...game};const pi=g.players.findIndex
   await api.save(g);setGame(g);};
 const buyShip=async ship=>{if((me?.gold||0)<ship.cost)return;const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
   g.players[pi].gold-=ship.cost;g.players[pi].ship=ship.id;setMsg(ship.name+"!");await api.save(g);setGame(g);};
+
+// ── Inventory functions ──
+const unequipItem=async(hIdx,eIdx)=>{const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
+  const h=g.players[pi].heroes[hIdx];if(!h)return;const item=h.eq[eIdx];if(!item)return;
+  h.eq=h.eq.filter((_,i)=>i!==eIdx);g.players[pi].inv=[...(g.players[pi].inv||[]),item];
+  setMsg(`${item.name} abgelegt → Inventar`);await api.save(g);setGame(g);};
+const equipFromInv=async(invIdx)=>{const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
+  const inv=g.players[pi].inv||[];const item=inv[invIdx];if(!item)return;
+  const h=g.players[pi].heroes[shopHero];if(!h||h.hp<=0){setMsg("Held nicht verfügbar!");return;}
+  const err=canEquip(h,item);if(err){setMsg(err);return;}
+  h.eq=[...(h.eq||[]),item];g.players[pi].inv=inv.filter((_,i)=>i!==invIdx);
+  setMsg(`${h.name}: ${item.name} ausgerüstet!`);await api.save(g);setGame(g);};
+const sellFromInv=async(invIdx)=>{const g={...game};const pi=g.players.findIndex(p=>p.id===playerId);
+  const inv=g.players[pi].inv||[];const item=inv[invIdx];if(!item)return;
+  const refund=Math.floor((ITEMS.find(i=>i.id===item.id)?.cost||0)/2);
+  g.players[pi].inv=inv.filter((_,i)=>i!==invIdx);g.players[pi].gold+=refund;
+  setMsg(`${item.name} verkauft: +${refund}💰`);await api.save(g);setGame(g);};
 
 // ── Level Up ──
 const learnSkill=async(hid,skillId)=>{if((me?.ruhm||0)<10){setMsg("10 🏆 nötig!");return;}
@@ -791,6 +821,7 @@ const PlayScreen=()=>{const other=game?.players?.find(p=>p.id!==playerId);
       {curReg?.shop&&<Btn onClick={()=>{setShopHero(0);setPhase("shop");}}>Laden</Btn>}
       {curReg?.port&&<Btn onClick={()=>{setRName("");setRRace(null);setRProf(null);setPhase("recruit");}}>Hafen{deadH.length>0?` (${deadH.length} K.O.)`:""}</Btn>}
       {curReg?.port&&<Btn onClick={()=>setPhase("levelup")}>Aufwerten 🏆</Btn>}
+      <Btn onClick={()=>setPhase("inventory")}>Inventar 🎒</Btn>
       {curReg?.dungeon&&<Btn onClick={()=>setMsg("Dungeons kommen bald!")}>Dungeon ⚔️</Btn>}
     </div>}
     {game?.log?.length>0&&<Card style={{marginTop:8}}><div style={{maxHeight:50,overflow:"auto"}}>{game.log.slice(-4).reverse().map((l,i)=><div key={i} style={{fontSize:9,color:T.txtD}}>{l}</div>)}</div></Card>}
@@ -850,8 +881,8 @@ const CombatScreen=()=>{const alive=aliveH.length;const eDead=combat?.enemy?.cur
     {!eDead&&!pDead&&availSkills.length>0&&<Card style={{padding:8}}>
       <div style={{fontSize:10,color:T.gold,marginBottom:4}}>Fertigkeit einsetzen:</div>
       <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
-        <div onClick={()=>setActiveSkill(null)} style={{padding:"4px 8px",borderRadius:6,fontSize:10,cursor:"pointer",background:!activeSkill?T.gold+"44":T.card,border:`1px solid ${T.border}`,color:T.parch}}>Keine</div>
-        {availSkills.map(s=>(<div key={s.id} onClick={()=>setActiveSkill(s)} style={{padding:"4px 8px",borderRadius:6,fontSize:10,cursor:"pointer",background:activeSkill?.id===s.id?T.gold+"44":T.card,border:`1px solid ${activeSkill?.id===s.id?T.gold:T.border}`,color:T.parch}}>
+        <div onClick={()=>setActiveSkill(null)} style={{padding:"4px 8px",borderRadius:6,fontSize:10,cursor:"pointer",background:activeSkills.length===0?T.gold+"44":T.card,border:`1px solid ${T.border}`,color:T.parch}}>Keine</div>
+        {availSkills.map(s=>(<div key={s.id} onClick={()=>setActiveSkills(prev=>prev.find(x=>x.id===s.id)?prev.filter(x=>x.id!==s.id):[...prev,s])} style={{padding:"4px 8px",borderRadius:6,fontSize:10,cursor:"pointer",background:activeSkills.find(x=>x.id===s.id)?T.gold+"44":T.card,border:`1px solid ${activeSkill?.id===s.id?T.gold:T.border}`,color:T.parch}}>
           {s.name}<div style={{fontSize:8,color:T.txtD}}>{s.desc}</div></div>))}</div></Card>}
     <Card style={{maxHeight:100,overflow:"auto",background:T.bg}}>{cLog.map((l,i)=><div key={i} style={{fontSize:10,color:l.includes("💥")?T.red:l.includes("⚔️")||l.includes("🔥")?T.green:T.parch,padding:"1px 0"}}>{l}</div>)}</Card>
     {eDead?<div style={{marginTop:8}}><div style={{textAlign:"center",color:T.green,fontSize:14,marginBottom:6}}>
@@ -888,7 +919,13 @@ const ShopScreen=()=>{const sd=SHOP_CONF[curReg?.shop]||SHOP_CONF.hafen;const eh
       return(<Card key={it.id} style={{display:"flex",alignItems:"center",gap:8,padding:8,opacity:locked?0.3:cant?0.5:1}}>
         <div style={{fontSize:14}}>{it.em}</div>
         <div style={{flex:1}}><div style={{fontSize:10,color:T.parch}}>{it.name}{locked?` 🔒${TIER_FAME[it.tier]}⭐`:""}{slotErr?` (${slotErr})`:""}</div>
-          <div style={{fontSize:8,color:T.txtD}}>{it.s==="m1"?"1H ":it.s==="m2"?"2H ":it.s==="r"?"FK ":it.s==="a"?"Rüst ":it.s==="s"?"Schild ":""}{it.nk>0&&`NK+${it.nk} `}{it.fk>0&&`FK+${it.fk} `}{it.rw>0&&`RW+${it.rw} `}{it.heal&&`Heal+${it.heal} `}{it.rum&&`+${it.rum}🍺 `}{it.hv?"[schwer]":""}</div></div>
+          <div style={{fontSize:8,color:T.txtD}}>{it.s==="m1"?"1H ":it.s==="m2"?"2H ":it.s==="r"?"FK ":it.s==="a"?"Rüst ":it.s==="s"?"Schild ":""}{it.nk>0&&`NK+${it.nk} `}{it.fk>0&&`FK+${it.fk} `}{it.rw>0&&`RW+${it.rw} `}{it.heal&&`Heal+${it.heal} `}{it.rum&&`+${it.rum}🍺 `}{it.hv?"[schwer] ":""}</div>
+          {it.d&&<div style={{fontSize:7,color:T.txtD,fontStyle:"italic"}}>{it.d}</div>}
+          {sh&&(it.nk>0||it.fk>0||it.rw>0)&&!slotErr&&<div style={{fontSize:8,color:T.green}}>
+            {it.nk>0&&`NK: ${hNK(sh,myCurses)}→${hNK(sh,myCurses)+it.nk-(sh.eq.filter(e=>e.s==="m1"||e.s==="m2").reduce((b,e)=>Math.max(b,e.nk),0)>it.nk?0:it.nk)} `}
+            {it.fk>0&&`FK: ${hFK(sh,myCurses)}→${hFK(sh,myCurses)+it.fk} `}
+            {it.rw>0&&`RW: ${hRW(sh)}→${hRW(sh)+it.rw}`}
+          </div>}</div>
         <Btn small primary onClick={()=>buyItem(it,shopHero)} disabled={cant} style={{width:"auto",minWidth:50}}>{pr}G</Btn></Card>);})}</div>
     <div style={{marginTop:10}}><Btn onClick={()=>setPhase("playing")}>Zurück</Btn></div></div>;};
 
@@ -929,6 +966,31 @@ const LevelUpScreen=()=>(<div style={{minHeight:"100vh",padding:20}}>
         <div style={{fontSize:8,color:T.txtD,padding:"2px 4px"}}>{s.desc}{s.stat?` · ${s.stat.toUpperCase()}+${s.mod}`:""}{s.cd?` · CD:${s.cd}R`:""}</div></div>))}
     </Card>;})}
   <div style={{marginTop:8}}><Btn onClick={()=>setPhase("playing")}>Zurück</Btn></div></div>);
+
+// ── INVENTORY ──
+const InventoryScreen=()=>{
+  const inv=me?.inv||[];
+  return <div style={{minHeight:"100vh",padding:20}}>
+    <div style={{fontSize:15,color:T.gold,fontFamily:"'Cinzel',serif",marginBottom:10}}>🎒 Inventar & Ausrüstung</div>
+    <div style={{fontSize:10,color:T.txtD,marginBottom:8}}>Tippe ✕ zum Ablegen, tippe Item im Inventar zum Ausrüsten auf gewählten Helden.</div>
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
+      {me?.heroes?.map((h,i)=>(<div key={h.id} onClick={()=>setShopHero(i)} style={{padding:6,borderRadius:8,background:shopHero===i?T.gold+"22":T.card,border:`2px solid ${shopHero===i?T.gold:T.border}`,cursor:"pointer",opacity:h.hp<=0?0.3:1}}>
+        <div style={{fontSize:11,fontWeight:700,color:shopHero===i?T.goldL:T.parch}}>{h.em} {h.name}</div>
+        <div style={{fontSize:8,color:T.txtD}}>NK:{hNK(h,myCurses)} FK:{hFK(h,myCurses)} RW:{hRW(h)}</div>
+        {(h.eq||[]).map((e,ei)=>(<div key={ei} style={{fontSize:8,color:T.gold}}>
+          {e.em}{e.name} <span onClick={ev=>{ev.stopPropagation();unequipItem(i,ei);}} style={{cursor:"pointer",color:T.red}}>✕</span></div>))}
+      </div>))}</div>
+    {inv.length>0&&<><div style={{fontSize:12,color:T.gold,marginBottom:6}}>Lose Gegenstände ({inv.length})</div>
+      {inv.map((it,idx)=>(<Card key={idx} style={{display:"flex",alignItems:"center",gap:8,padding:8}}>
+        <span style={{fontSize:14}}>{it.em}</span>
+        <div style={{flex:1}}><div style={{fontSize:11,color:T.parch}}>{it.name}</div>
+          <div style={{fontSize:8,color:T.txtD}}>{it.nk>0&&`NK+${it.nk} `}{it.fk>0&&`FK+${it.fk} `}{it.rw>0&&`RW+${it.rw}`}</div></div>
+        <Btn small primary onClick={()=>equipFromInv(idx)} style={{width:"auto",minWidth:55}}>Ausrüsten</Btn>
+        <Btn small danger onClick={()=>sellFromInv(idx)} style={{width:"auto",minWidth:45}}>Verkauf</Btn>
+      </Card>))}</>}
+    {inv.length===0&&<div style={{fontSize:11,color:T.txtD,textAlign:"center",padding:20}}>Kein loses Inventar. Beute aus Kämpfen landet hier.</div>}
+    <div style={{marginTop:10}}><Btn onClick={()=>setPhase("playing")}>Zurück</Btn></div>
+  </div>;};
 
 // ── FINISHED ──
 const FinishedScreen=()=>(<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
@@ -974,6 +1036,7 @@ return(<div style={{background:T.bg,minHeight:"100vh",color:T.txt,fontFamily:"'C
   {phase==="shop"&&ShopScreen()}
   {phase==="recruit"&&RecruitScreen()}
   {phase==="levelup"&&LevelUpScreen()}
+  {phase==="inventory"&&InventoryScreen()}
   {phase==="finished"&&FinishedScreen()}
 </div>);
 }
